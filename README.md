@@ -6,22 +6,28 @@
 ## ***Task List***
 - [ ] Add Elements To Pages
   - [ ] admin.html
-  - [ ] home.html
-  - [ ] index.html
+  - [x] home.html
+  - [x] index.html
+  - [x] settings.html
+  - [ ] filament.html
 - [ ] Add JavaScript
   - [ ] main.js
   - [ ] passOp.js
 - [ ] Add CSS
   - [ ] login.css
   - [ ] main.css
-- [ ] Add Config
+- [ ] Add Example Config
   - [ ] config.txt
 
 ## Website Structure
 - index
   - *USER LOGGED IN*
-  - admin (ADMIN LOGIN)
   - home (USER LOGIN)
+    - settings
+  - admin (ADMIN LOGIN)
+    - filament
+    - settings (different navigation bar)
+  
 
 ## Welcome!
 This website is meant to be a simple algorithm that 
