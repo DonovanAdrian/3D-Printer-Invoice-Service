@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/3dprinter.png">
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <title>Settings</title>
+
+    <script src="js/passOp.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
+
+    <div class="topnav">
+        <ul>
+            <li><div class="cropIcon"><img class="imgIcon" src="img/3dprinter.png"></div></li>
+            <div class="break"></div>
+            <li><a>Home</a></li>
+            <li><a style="display: none">Filaments</a></li>
+            <li><a class="active">Settings</a></li>
+            <li><a class="signOut">Sign Out</a></li>
+        </ul>
+    </div>
+</head>
+<body>
+
+<div class="userUpdateContainer">
+    <p class="userInf">Your Name</p>
+    <input type="text" id="nameInp" placeholder="Name" class="userInp">
+    <p class="userInf">Your User Name</p>
+    <input type="text" id="userNameInp" placeholder="User Name" class="userInp">
+    <p class="userInf">Your Pin</p>
+    <input type="text" id="userPinInp" placeholder="Enter Pin" class="userInp">
+    <p class="userInf">Confirm Your Pin</p>
+    <input type="text" id="userPinConfInp" placeholder="Confirm Pin" class="userInp"><br/><br/>
+    <span class="updateBtn" id="updateUser">Loading... Please Wait</span>
+</div>
+
+<div id="offlineModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeOffline">&times;</span>
+            <h2>It appears that you are offline!</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p>Please reconnect to the internet in order to use this website properly!</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
