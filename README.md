@@ -5,7 +5,7 @@
 
 ## ***Task List***
 - [ ] Add Elements To Pages
-  - [ ] admin.html
+  - [x] admin.html
   - [x] home.html
   - [x] index.html
   - [x] settings.html
