@@ -4,12 +4,10 @@
 
 
 ## ***Task List***
-- [ ] Add Elements To Pages
-  - [x] admin.html
-  - [x] home.html
-  - [x] index.html
-  - [x] settings.html
+- [x] Add Basic Elements To Pages
+- [ ] Add Input Modals To Pages
   - [ ] filament.html
+  - [ ] home.html
 - [ ] Add JavaScript
   - [ ] main.js
   - [ ] passOp.js
