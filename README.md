@@ -27,13 +27,13 @@
     - settings (different navigation bar)
 
 ## Data Structures
-- Users
+- Users/Guests
   - UID
-  - Name
+  - Name (Unavailable For Guests)
   - User Name
   - Pin
   - Prints (uid)
-  - Admin (integer 1/0)
+  - Admin (integer 1/0, Unavailable For Guests)
 - Filament
   - UID
   - Title
