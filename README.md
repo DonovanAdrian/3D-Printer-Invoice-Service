@@ -27,7 +27,32 @@
   - admin (ADMIN LOGIN)
     - filament
     - settings (different navigation bar)
-  
+
+## Data Structures
+- Users
+  - UID
+  - Name
+  - User Name
+  - Pin
+  - Prints (uid)
+  - Admin (integer 1/0)
+- Filament
+  - UID
+  - Title
+  - Type
+  - Weight
+  - Thickness
+  - Cost Per Roll
+  - Cost Per Gram
+- Prints
+  - UID
+  - Title
+  - Filament (uid)
+  - Time
+  - Size
+  - Infill
+  - Supports
+  - Price
 
 ## Welcome!
 This website is meant to be a simple algorithm that 
