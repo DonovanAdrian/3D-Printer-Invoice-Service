@@ -5,9 +5,7 @@
 
 ## ***Task List***
 - [x] Add Basic Elements To Pages
-- [ ] Add Input Modals To Pages
-  - [ ] filament.html
-  - [ ] home.html
+- [x] Add Input Modals To Pages
 - [ ] Add JavaScript
   - [ ] main.js
   - [ ] passOp.js
@@ -51,6 +49,7 @@
   - Infill
   - Supports
   - Price
+  - Status (Ordered/Printing/Complete)
 
 ## Welcome!
 This website is meant to be a simple algorithm that 
