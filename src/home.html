@@ -30,6 +30,8 @@
     <li class="dataElement" id="PrintPlaceholder">Loading... Please Wait</li>
 </ul>
 
+<span class="upgradeBtn" id="upgradeUser" style="display: none">Loading... Please Wait</span>
+
 <span class="addBtn" id="addPrint">Loading... Please Wait</span>
 
 <div id="printModal" class="modal">
@@ -47,7 +49,6 @@
             <p id="printTime">Loading Time...</p>
             <p id="printSize">Loading Size...</p>
             <p id="printInfill">Loading Infill...</p>
-            <p id="printSupports">Loading Supports...</p>
             <p id="printPrice">Loading Price...</p>
         </div>
 
@@ -55,6 +56,57 @@
         <div class="modal-footer">
             <h3 style="float: left;padding-left: 10px" id="printUpdate">Edit</h3>
             <h3 style="float: right;padding-right: 10px" id="printDelete">Remove</h3>
+        </div>
+    </div>
+</div>
+
+<div id="editPrintModal" class="modal">
+    <div class="modal-content">
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 id="editPrintTitle">Loading Title...</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <input type="text" id="printEditTitle" placeholder="Print Name" class="dataInp">
+            <div class="dataDropdown">
+                <button class="dropBtn" id="printEditFilament">Choose A Filament Type</button>
+                <div class="dataDropdownContent" id="printEditFilamentContent">
+                    <a>Loading Filament Types...</a>
+                </div>
+            </div>
+
+            <div class="dataDropdown">
+                <button class="dropBtn" id="printEditSize">Choose A Print Size</button>
+                <div class="dataDropdownContent">
+                    <a id="printSizeSmall">Small</a>
+                    <a id="printSizeNormal">Normal</a>
+                    <a id="printSizeLarge">Large</a>
+                </div>
+            </div>
+
+            <div class="dataDropdown">
+                <button class="dropBtn" id="printEditInfill">Choose An Infill Amount</button>
+                <div class="dataDropdownContent">
+                    <a id="printInfillNormal">15% (Normal)</a>
+                    <a id="printInfillLarge">35%</a>
+                    <a id="printInfillXL">50%</a>
+                    <a id="printInfillXXL">75%</a>
+                    <a id="printInfillXXXL">100% (Full)</a>
+                </div>
+            </div>
+
+            <p id="printEditTime">Loading Time...</p>
+            <p id="printEditPrice">Loading Price...</p>
+            <p id="printEditInfo">Loading Info...</p>
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="printEditUpdate">Update</h3>
+            <h3 style="float: right;padding-right: 10px" id="printEditCancel">Cancel</h3>
         </div>
     </div>
 </div>
