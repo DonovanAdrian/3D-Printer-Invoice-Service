@@ -61,6 +61,64 @@
     </div>
 </div>
 
+<div id="editFilamentModal" class="modal">
+    <div class="modal-content">
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 id="editFilamentTitle">Loading Title...</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <input type="text" id="filamentEditTitle" placeholder="Filament Name" class="dataInp">
+
+            <div class="dataDropdown">
+                <button class="dropBtn" id="filamentEditFilament">Choose A Filament Type</button>
+                <div class="dataDropdownContent" id="filamentEditFilamentContent">
+                    <a id="filamentTypePlaceholder">Loading Filament Types...</a>
+                </div>
+            </div>
+            <input type="text" id="filamentEditFilamentNew" placeholder="Input Another Type" class="dataInp" style="display: none">
+
+            <div class="dataDropdown">
+                <button class="dropBtn" id="filamentEditWeight">Choose A Filament Weight</button>
+                <div class="dataDropdownContent">
+                    <a id="filamentWeightXS">500g</a>
+                    <a id="filamentWeightS">750g</a>
+                    <a id="filamentWeightM">1kg</a>
+                    <a id="filamentWeightXL">3kg</a>
+                    <a id="filamentWeightOther">Other</a>
+                </div>
+            </div>
+            <input type="text" id="filamentEditWeightNew" placeholder="Input Another Weight" class="dataInp" style="display: none">
+
+            <div class="dataDropdown">
+                <button class="dropBtn" id="filamentEditThickness">Choose A Filament Thickness</button>
+                <div class="dataDropdownContent">
+                    <a id="filamentThicknessS">1.75mm</a>
+                    <a id="filamentThicknessM">2.85mm</a>
+                    <a id="filamentThicknessL">3.00mm</a>
+                    <a id="filamentThicknessOther">Other</a>
+                </div>
+            </div>
+            <input type="text" id="filamentEditThicknessNew" placeholder="Input Another Thickness" class="dataInp" style="display: none">
+
+            <input type="number" id="filamentEditCostPerRoll" placeholder="Cost Per Roll" class="dataInp">
+
+            <p id="filamentEditCostPerGram">Loading Cost Per Gram...</p>
+            <p id="filamentEditUserCount">Loading User Count...</p>
+            <p id="filamentEditInfo" style="display: none">Loading Info...</p>
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="filamentEditUpdate">Update</h3>
+            <h3 style="float: right;padding-right: 10px" id="filamentEditCancel">Cancel</h3>
+        </div>
+    </div>
+</div>
+
 <div id="offlineModal" class="modal">
     <div class="modal-content">
 
