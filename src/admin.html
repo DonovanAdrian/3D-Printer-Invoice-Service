@@ -55,7 +55,7 @@
 
         <!--Modal Footer-->
         <div class="modal-footer">
-            <h3 style="float: left;padding-left: 10px" id="userAdminUpdate">Loading Admin Status...</h3>
+            <h3 style="float: left;padding-left: 10px" id="userShowPrints">Loading User Prints...</h3>
             <h3 style="float: right;padding-right: 10px" id="userDelete">Loading Removal Status...</h3>
         </div>
     </div>
@@ -81,7 +81,64 @@
 
         <!--Modal Footer-->
         <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="guestShowPrints">Loading Guest Prints...</h3>
             <h3 style="float: right;padding-right: 10px" id="guestDelete">Loading Removal Status...</h3>
+        </div>
+    </div>
+</div>
+
+<div id="printListModal" class="modal">
+    <div class="modal-content">
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 id="printListTitle">Loading Title...</h2>
+        </div>
+    </div>
+
+    <!--Modal Body-->
+    <div class="modal-body">
+        <ul id="printListContainer" class="dataList">
+            <li class="dataElement" id="PrintPlaceholder">Loading... Please Wait</li>
+        </ul>
+    </div>
+
+    <!--Modal Footer-->
+    <div class="modal-footer"></div>
+</div>
+
+<div id="printModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 id="printTitle">Loading Title...</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p id="printFilament">Loading Filament Type...</p>
+            <p id="printTime">Loading Time...</p>
+            <p id="printSize">Loading Size...</p>
+            <p id="printInfill">Loading Infill...</p>
+            <p id="printPrice">Loading Price...</p>
+            <div class="dataDropdown">
+                <button class="dropBtn" id="printStatus">Loading Status...</button>
+                <div class="dataDropdownContent">
+                    <a id="statusOrdered">Ordered</a>
+                    <a id="statusPrinting">Printing</a>
+                    <a id="statusComplete">Complete</a>
+                    <a id="filamentWeightOther">Other</a>
+                </div>
+            </div>
+            <input type="text" id="printStatusNew" placeholder="Input Another Status" class="dataInp" style="display: none">
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="printUpdate">Update</h3>
+            <h3 style="float: right;padding-right: 10px" id="printCancel">Cancel</h3>
         </div>
     </div>
 </div>
