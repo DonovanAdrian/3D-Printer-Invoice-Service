@@ -12,8 +12,7 @@
 - [ ] Add CSS
   - [ ] login.css
   - [ ] main.css
-- [ ] Add Example Config
-  - [ ] config.txt
+- [x] Add Example Config
 
 ## Website Structure
 - index
@@ -50,6 +49,7 @@
   - Supports
   - Price
   - Status (Ordered/Printing/Complete)
+  - Creation Date
 
 ## Welcome!
 This website is meant to be a simple algorithm that 
