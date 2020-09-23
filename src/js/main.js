@@ -147,35 +147,59 @@ let filamentVarArr;
 
 
 window.onload = function() {
-    let findPageElement = document.getElementById("indexTitle");
+    let findPageElement = document.getElementById("indexTitleID");
+    let pageChosenBool = false;
+    let pageInitializedBool = false;
+
     if (findPageElement != null) {
         console.log("Initialize Index Page");
-        if(verifyVariableIntegrity(loginVarArr))
+        pageChosenBool = true;
+        if(verifyVariableIntegrity(loginVarArr)) {
             initializeIndexPage();
+            pageInitializedBool = true;
+        }
     }
-    findPageElement = document.getElementById("homeTitle");
+    findPageElement = document.getElementById("homeTitleID");
     if (findPageElement != null) {
         console.log("Initialize Home Page");
-        if(verifyVariableIntegrity(homeVarArr))
+        pageChosenBool = true;
+        if(verifyVariableIntegrity(homeVarArr)) {
             initializeHomePage();
+            pageInitializedBool = true;
+        }
     }
-    findPageElement = document.getElementById("settingsTitle");
+    findPageElement = document.getElementById("settingsTitleID");
     if (findPageElement != null) {
         console.log("Initialize Settings Page");
-        if(verifyVariableIntegrity(settingsVarArr))
+        pageChosenBool = true;
+        if(verifyVariableIntegrity(settingsVarArr)) {
             initializeSettingsPage();
+            pageInitializedBool = true;
+        }
     }
-    findPageElement = document.getElementById("adminTitle");
+    findPageElement = document.getElementById("adminTitleID");
     if (findPageElement != null) {
         console.log("Initialize Admin Page");
-        if(verifyVariableIntegrity(adminVarArr))
+        pageChosenBool = true;
+        if(verifyVariableIntegrity(adminVarArr)) {
             initializeAdminPage();
+            pageInitializedBool = true;
+        }
     }
-    findPageElement = document.getElementById("filamentTitle");
+    findPageElement = document.getElementById("filamentTitleID");
     if (findPageElement != null) {
         console.log("Initialize Filament Page");
-        if(verifyVariableIntegrity(filamentVarArr))
+        pageChosenBool = true;
+        if(verifyVariableIntegrity(filamentVarArr)) {
             initializeFilamentPage();
+            pageInitializedBool = true;
+        }
+    }
+
+    if (pageChosenBool && pageInitializedBool) {
+        console.log("Page Chosen And Initialized!");
+    } else {
+        alert("Page Not Properly Loaded! Please Turn Off AdBlockers And Refresh!");
     }
 };
 
