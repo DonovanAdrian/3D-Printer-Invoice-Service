@@ -61,9 +61,11 @@ let editUserNameInput;
 let editPinInput;
 let editConfirmPinInput;
 let editUpdateUserBtn;
+let adminViewUsersBtn;
 let settingsVarArr;
 
 //ADMIN VARS
+let settingsBtn;
 let userListContainer;
 let userListPlaceholder;
 let userModal;
@@ -279,8 +281,9 @@ function initializeSettingsPage(){
     editPinInput = document.getElementById("userPinInp");
     editConfirmPinInput = document.getElementById("userPinConfInp");
     editUpdateUserBtn = document.getElementById("updateUser");
+    adminViewUsersBtn = document.getElementById("viewUsers");
     settingsVarArr = [editNameInput, editUserNameInput, editPinInput, editConfirmPinInput, editUpdateUserBtn,
-        offlineModal, offlineModalSpan];
+        adminViewUsersBtn, offlineModal, offlineModalSpan];
 }
 
 function initializeAdminPage(){
@@ -297,6 +300,7 @@ function initializeAdminPage(){
     printStatus = document.getElementById("printStatus");
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
+    settingsBtn = document.getElementById("settingsBtn");
     userListContainer = document.getElementById("userListContainer");
     userListPlaceholder = document.getElementById("UserPlaceholder");
     userModal = document.getElementById("userModal");
@@ -332,9 +336,9 @@ function initializeAdminPage(){
     printStatusNew = document.getElementById("printStatusNew");
     printCreationDate = document.getElementById("printCreationDate");
     printCancelBtn = document.getElementById("printCancel");
-    adminVarArr = [userListContainer, userListPlaceholder, userModal, userTitle, userUID, userName, userUserName,
-        userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn, userDeleteBtn,
-        guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
+    adminVarArr = [settingsBtn, userListContainer, userListPlaceholder, userModal, userTitle, userUID, userName,
+        userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
+        userDeleteBtn, guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
         guestShowPrintsBtn, guestDeleteBtn, printListModal, printListModalTitle, printListModalContainer,
         printListModalPlaceholder, printStatusOrdered, printStatusPrinting, printStatusComplete,
         printStatusOther, printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan,
