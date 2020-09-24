@@ -8,7 +8,7 @@
 - [x] Add Input Modals To Pages
 - [ ] Add JavaScript
   - [ ] main.js
-  - [ ] passOp.js
+  - [x] passOp.js
 - [ ] Add CSS
   - [ ] login.css
   - [ ] main.css
