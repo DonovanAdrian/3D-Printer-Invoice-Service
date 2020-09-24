@@ -126,7 +126,6 @@ let filamentEditWeight;
 let filamentWeightXS;
 let filamentWeightS;
 let filamentWeightM;
-let filamentWeightL;
 let filamentWeightXL;
 let filamentWeightOther;
 let filamentEditWeightNew;
@@ -154,8 +153,8 @@ window.onload = function() {
     if (findPageElement != null) {
         console.log("Initialize Index Page");
         pageChosenBool = true;
+        initializeIndexPage();
         if(verifyVariableIntegrity(loginVarArr)) {
-            initializeIndexPage();
             pageInitializedBool = true;
         }
     }
@@ -163,8 +162,8 @@ window.onload = function() {
     if (findPageElement != null) {
         console.log("Initialize Home Page");
         pageChosenBool = true;
+        initializeHomePage();
         if(verifyVariableIntegrity(homeVarArr)) {
-            initializeHomePage();
             pageInitializedBool = true;
         }
     }
@@ -172,8 +171,8 @@ window.onload = function() {
     if (findPageElement != null) {
         console.log("Initialize Settings Page");
         pageChosenBool = true;
+        initializeSettingsPage();
         if(verifyVariableIntegrity(settingsVarArr)) {
-            initializeSettingsPage();
             pageInitializedBool = true;
         }
     }
@@ -181,8 +180,8 @@ window.onload = function() {
     if (findPageElement != null) {
         console.log("Initialize Admin Page");
         pageChosenBool = true;
+        initializeAdminPage();
         if(verifyVariableIntegrity(adminVarArr)) {
-            initializeAdminPage();
             pageInitializedBool = true;
         }
     }
@@ -190,8 +189,8 @@ window.onload = function() {
     if (findPageElement != null) {
         console.log("Initialize Filament Page");
         pageChosenBool = true;
+        initializeFilamentPage();
         if(verifyVariableIntegrity(filamentVarArr)) {
-            initializeFilamentPage();
             pageInitializedBool = true;
         }
     }
@@ -203,26 +202,6 @@ window.onload = function() {
     }
 };
 
-function verifyVariableIntegrity(variableArr){
-    let variableIntegrity = true;
-
-    for(let i = 0; i < variableArr.length; i++){
-        try{
-            if (variableArr[i] != null) {
-                //console.log("Variable Valid.");
-                variableArr[i].innerHTML;
-            } else {
-                console.log("Variable #" + i + ": " + variableArr[i] + " Is Null.");
-                variableIntegrity = false;
-            }
-        } catch (err) {
-            console.log("Variable #" + i + ": " + variableArr[i] + " Was Not Initialized.");
-            variableIntegrity = false;
-        }
-    }
-
-    return variableIntegrity;
-}
 
 
 //Initializations
@@ -267,15 +246,15 @@ function initializeHomePage(){
     editPrintFilamentContent = document.getElementById("printEditFilament");
     editPrintFilamentPlaceholder = document.getElementById("printFilamentPlaceholder");
     editPrintSize = document.getElementById("printEditSize");
-    editPrintSizeS = document.getElementById("printEditSizeSmall");
-    editPrintSizeN = document.getElementById("printEditSizeNormal");
-    editPrintSizeL = document.getElementById("printEditSizeLarge");
+    editPrintSizeS = document.getElementById("printSizeSmall");
+    editPrintSizeN = document.getElementById("printSizeNormal");
+    editPrintSizeL = document.getElementById("printSizeLarge");
     editPrintInfill = document.getElementById("printEditInfill");
-    editPrintInfillNormal = document.getElementById("printEditNormal");
-    editPrintInfillL = document.getElementById("printEditLarge");
-    editPrintInfillXL = document.getElementById("printEditXL");
-    editPrintInfillXXL = document.getElementById("printEditXXL");
-    editPrintInfillXXXL = document.getElementById("printEditXXXL");
+    editPrintInfillNormal = document.getElementById("printInfillNormal");
+    editPrintInfillL = document.getElementById("printInfillLarge");
+    editPrintInfillXL = document.getElementById("printInfillXL");
+    editPrintInfillXXL = document.getElementById("printInfillXXL");
+    editPrintInfillXXXL = document.getElementById("printInfillXXXL");
     editPrintTime = document.getElementById("printEditTime");
     editPrintPrice = document.getElementById("printEditPrice");
     editPrintInfo = document.getElementById("printEditInfo");
@@ -392,7 +371,6 @@ function initializeFilamentPage(){
     filamentWeightXS = document.getElementById("filamentWeightXS");
     filamentWeightS = document.getElementById("filamentWeightS");
     filamentWeightM = document.getElementById("filamentWeightM");
-    filamentWeightL = document.getElementById("filamentWeightL");
     filamentWeightXL = document.getElementById("filamentWeightXL");
     filamentWeightOther = document.getElementById("filamentWeightOther");
     filamentEditWeightNew = document.getElementById("filamentEditWeightNew");
@@ -413,9 +391,29 @@ function initializeFilamentPage(){
         filamentUserCount, filamentUpdateBtn, filamentDeleteBtn, editFilamentModal, editFilamentTitle,
         filamentEditTitle, filamentEditFilament, filamentEditFilamentContent, filamentTypePlaceholder,
         filamentEditFilamentNew, filamentEditWeight, filamentWeightXS, filamentWeightS, filamentWeightM,
-        filamentWeightL, filamentWeightXL, filamentWeightOther, filamentEditWeightNew,
-        filamentEditThickness, filamentThicknessS, filamentThicknessM, filamentThicknessL,
-        filamentThicknessOther, filamentEditThicknessNew, filamentEditCostPerRoll, filamentEditCostPerGram,
-        filamentEditUserCount, filamentEditInfo, filamentEditUpdate, filamentEditCancel, offlineModal,
-        offlineModalSpan];
+        filamentWeightXL, filamentWeightOther, filamentEditWeightNew, filamentEditThickness, filamentThicknessS,
+        filamentThicknessM, filamentThicknessL, filamentThicknessOther, filamentEditThicknessNew,
+        filamentEditCostPerRoll, filamentEditCostPerGram, filamentEditUserCount, filamentEditInfo, filamentEditUpdate,
+        filamentEditCancel, offlineModal, offlineModalSpan];
+}
+
+function verifyVariableIntegrity(variableArr){
+    let variableIntegrity = true;
+
+    for(let i = 0; i < variableArr.length; i++){
+        try{
+            if (variableArr[i] != null) {
+                //console.log("Variable Valid.");
+                variableArr[i].innerHTML;
+            } else {
+                console.log("Variable #" + i + ": " + variableArr[i] + " Is Null.");
+                variableIntegrity = false;
+            }
+        } catch (err) {
+            console.log("Variable #" + i + ": " + variableArr[i] + " Was Not Initialized.");
+            variableIntegrity = false;
+        }
+    }
+
+    return variableIntegrity;
 }
