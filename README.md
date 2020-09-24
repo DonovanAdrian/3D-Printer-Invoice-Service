@@ -9,19 +9,22 @@
 - [ ] Add JavaScript
   - [ ] main.js
   - [x] passOp.js
-- [ ] Add CSS
-  - [ ] login.css
-  - [ ] main.css
+- [x] Add CSS
 - [x] Add Example Config
 
 ## Website Structure
 - index
   - *USER LOGGED IN*
-  - home (USER LOGIN)
+  - (USER LOGIN)
+    - home
     - settings
-  - admin (ADMIN LOGIN)
+    - sign out
+  - (ADMIN LOGIN)
+    - home
     - filament
-    - settings (different navigation bar)
+    - settings
+        - admin
+    - sign out
 
 ## Data Structures
 - Users/Guests
