@@ -2,7 +2,64 @@
  * This project was created by Donovan Adrian and any
  * edits or changes must be confirmed as valid by Donovan
  * with written consent under any circumstance.
+ *
+ *
+ *
+ * * * * * * * * * * * * DIRECTORY * * * * * * * * * * * *
+ * VARIABLE DECLARATIONS
+ *   - COMMON PAGE VARS
+ *   - LOGIN VARS
+ *   - HOME VARS
+ *   - SETTINGS VARS
+ *   - ADMIN VARS
+ *   - FILAMENT VARS
+ *
+ * ONLOAD FUNCTION
+ *
+ * COMMON PAGE FUNCTIONS
+ *
+ * LOGIN FUNCTIONS
+ *   - fetchConfig()
+ *   - DBFetchAllUsers()
+ *
+ * HOME FUNCTIONS
+ *
+ * SETTINGS FUNCTIONS
+ *
+ * ADMIN FUNCTIONS
+ *
+ * FILAMENT FUNCTIONS
+ *
+ * FETCH DATA FUNCTIONS
+ *   - DBFetchPrintData()
+ *   - DBFetchFilamentData()
+ *
+ * LOAD DATA FUNCTIONS
+ *   - loadConfig()
+ *   - loadCurrentUser()
+ *   - loadAllUsers()
+ *   - loadPrintData()
+ *   - loadFilamentData()
+ *
+ * UPDATE DATA FUNCTIONS
+ *   - DBUpdateCurrentUser()
+ *
+ * DELETE DATA FUNCTIONS
+ *   - DBDeletePrintData()
+ *   - DBDeleteFilamentData()
+ *
+ * INITIALIZATION FUNCTIONS
+ *   - initializeIndexPage()
+ *   - initializeHomePage()
+ *   - initializeSettingsPage()
+ *   - initializeAdminPage()
+ *   - initializeFilamentPage()
+ *   - verifyVariableIntegrity(variableArr)
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
+
+
 
 //COMMON PAGE VARS
 let offlineModal;
@@ -146,7 +203,7 @@ let filamentEditCancel;
 let filamentVarArr;
 
 
-
+//ONLOAD FUNCTION
 window.onload = function() {
     let findPageElement = document.getElementById("indexTitleID");
     let pageChosenBool = false;
@@ -158,6 +215,10 @@ window.onload = function() {
         initializeIndexPage();
         if(verifyVariableIntegrity(loginVarArr)) {
             pageInitializedBool = true;
+
+            fetchConfig();
+
+            DBFetchAllUsers();
         }
     }
     findPageElement = document.getElementById("homeTitleID");
@@ -167,6 +228,17 @@ window.onload = function() {
         initializeHomePage();
         if(verifyVariableIntegrity(homeVarArr)) {
             pageInitializedBool = true;
+
+            loadConfig();
+
+            loadCurrentUser();
+            DBUpdateCurrentUser();
+
+            loadPrintData();
+            DBFetchPrintData();
+
+            loadFilamentData();
+            DBFetchFilamentData();
         }
     }
     findPageElement = document.getElementById("settingsTitleID");
@@ -176,6 +248,11 @@ window.onload = function() {
         initializeSettingsPage();
         if(verifyVariableIntegrity(settingsVarArr)) {
             pageInitializedBool = true;
+
+            loadConfig();
+
+            loadCurrentUser();
+            DBUpdateCurrentUser();
         }
     }
     findPageElement = document.getElementById("adminTitleID");
@@ -185,6 +262,17 @@ window.onload = function() {
         initializeAdminPage();
         if(verifyVariableIntegrity(adminVarArr)) {
             pageInitializedBool = true;
+
+            loadConfig();
+
+            loadAllUsers();
+            DBFetchAllUsers();
+
+            loadPrintData();
+            DBFetchPrintData();
+
+            loadFilamentData();
+            DBFetchFilamentData();
         }
     }
     findPageElement = document.getElementById("filamentTitleID");
@@ -194,19 +282,120 @@ window.onload = function() {
         initializeFilamentPage();
         if(verifyVariableIntegrity(filamentVarArr)) {
             pageInitializedBool = true;
+
+            loadConfig();
+
+            loadAllUsers();
+            DBFetchAllUsers();
+
+            loadFilamentData();
+            DBFetchFilamentData();
         }
     }
 
-    if (pageChosenBool && pageInitializedBool) {
-        console.log("Page Chosen And Initialized!");
-    } else {
+    if (!pageChosenBool || !pageInitializedBool) {
         alert("Page Not Properly Loaded! Please Turn Off AdBlockers And Refresh!");
     }
 };
 
 
 
-//Initializations
+//COMMON PAGE FUNCTIONS
+//common fxns here
+
+
+
+//LOGIN FUNCTIONS
+function fetchConfig(){
+    //fetch config from local file
+
+    //save config object
+}
+
+function DBFetchAllUsers(){
+    //fetch all
+
+    //save all
+    //save current
+}
+
+
+
+//HOME FUNCTIONS
+//home fxns here
+
+//SETTINGS FUNCTIONS
+//settings fxns here
+
+//ADMIN FUNCTIONS
+//admin fxns here
+
+//FILAMENT FUNCTIONS
+//filament fxns here
+
+//FETCH DATA FUNCTIONS
+function DBFetchPrintData(){
+    //fetch
+
+    //save
+}
+
+function DBFetchFilamentData(){
+    //fetch
+
+    //save
+}
+
+
+
+//LOAD DATA FUNCTIONS
+function loadConfig(){
+    //load
+}
+
+function loadCurrentUser(){
+    //load
+}
+
+function loadAllUsers(){
+    //load
+}
+
+function loadPrintData(){
+    //load
+}
+
+function loadFilamentData(){
+    //load
+}
+
+
+
+//UPDATE DATA FUNCTIONS
+function DBUpdateCurrentUser(){
+    //update
+
+    //save
+}
+
+
+
+//DELETE DATA FUNCTIONS
+function DBDeletePrintData(){
+    //delete
+
+    //save
+}
+
+function DBDeleteFilamentData(){
+    //delete
+
+    //save
+}
+
+
+
+//INITIALIZATION FUNCTIONS
 function initializeIndexPage(){
     //Common
     offlineModal = document.getElementById("offlineModal");
