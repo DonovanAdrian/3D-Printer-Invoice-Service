@@ -148,7 +148,6 @@ let adminViewUsersBtn;
 let settingsVarArr;
 
 //ADMIN VARS
-let settingsBtn;
 let userListContainer;
 let userListPlaceholder;
 let userModal;
@@ -240,8 +239,10 @@ window.onload = function() {
         pageChosenBool = true;
         initializeIndexPage();
         if(verifyVariableIntegrity(loginVarArr)) {
+            console.log("Index Page Successfully Initialized");
             pageInitializedBool = true;
 
+            /*
             fetchConfig();
 
             while(true)
@@ -249,6 +250,7 @@ window.onload = function() {
                     break;
 
             DBFetchAllUsers();
+            */
         }
     }
     findPageElement = document.getElementById("homeTitleID");
@@ -257,6 +259,7 @@ window.onload = function() {
         pageChosenBool = true;
         initializeHomePage();
         if(verifyVariableIntegrity(homeVarArr)) {
+            console.log("Home Page Successfully Initialized");
             pageInitializedBool = true;
 
             loadConfig();
@@ -282,6 +285,7 @@ window.onload = function() {
         pageChosenBool = true;
         initializeSettingsPage();
         if(verifyVariableIntegrity(settingsVarArr)) {
+            console.log("Settings Page Successfully Initialized");
             pageInitializedBool = true;
 
             loadConfig();
@@ -301,6 +305,7 @@ window.onload = function() {
         pageChosenBool = true;
         initializeAdminPage();
         if(verifyVariableIntegrity(adminVarArr)) {
+            console.log("Admin Page Successfully Initialized");
             pageInitializedBool = true;
 
             loadConfig();
@@ -326,6 +331,7 @@ window.onload = function() {
         pageChosenBool = true;
         initializeFilamentPage();
         if(verifyVariableIntegrity(filamentVarArr)) {
+            console.log("Filament Page Successfully Initialized");
             pageInitializedBool = true;
 
             loadConfig();
@@ -531,6 +537,8 @@ function fetchConfig(){
 function DBFetchAllUsers(){
     console.log("Fetching Users From Database");
 
+    allUserDBRef = firebase.database().ref("users/");
+
     var fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
             userArr.push(data.val());
@@ -591,18 +599,24 @@ function signUp(){
 
 //FETCH DATA FUNCTIONS
 function DBFetchCurrentUser(){
+
+    currentUserDBRef = firebase.database().ref("users/" + user.uid);
     //fetch
 
     //save
 }
 
 function DBFetchPrintData(){
+
+    printDBRef = firebase.database().ref("prints/");
     //fetch
 
     //save
 }
 
 function DBFetchFilamentData(){
+
+    filamentDBRef = firebase.database().ref("filaments/");
     //fetch
 
     //save
@@ -695,9 +709,7 @@ function initializeIndexPage(){
     loginInfoSuccess = document.getElementById("loginInfo2");
     signUpFld = document.getElementById("signUpFld");
     loginVarArr = [userNameInput, pinInput, loginBtn, loginGuestBtn, loginInfoFail, loginInfoSuccess, signUpFld,
-        offlineModal, offlineModalSpan, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
-
-    allUserDBRef = firebase.database().ref("users/");
+        offlineModal, offlineModalSpan];
 }
 
 function initializeHomePage(){
@@ -750,10 +762,6 @@ function initializeHomePage(){
         editPrintPrice, editPrintInfo, editPrintUpdateBtn, editPrintCancelBtn, offlineModal, offlineModalSpan,
         printModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus,
         printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
-
-    currentUserDBRef = firebase.database().ref("users/" + user.uid);
-    printDBRef = firebase.database().ref("prints/");
-    filamentDBRef = firebase.database().ref("filaments/");
 }
 
 function initializeSettingsPage(){
@@ -773,8 +781,6 @@ function initializeSettingsPage(){
     adminViewUsersBtn = document.getElementById("viewUsers");
     settingsVarArr = [editNameInput, editUserNameInput, editPinInput, editConfirmPinInput, editUpdateUserBtn,
         adminViewUsersBtn, offlineModal, offlineModalSpan, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
-
-    currentUserDBRef = firebase.database().ref("users/" + user.uid);
 }
 
 function initializeAdminPage(){
@@ -795,7 +801,6 @@ function initializeAdminPage(){
     printStatus = document.getElementById("printStatus");
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
-    settingsBtn = document.getElementById("settingsBtn");
     userListContainer = document.getElementById("userListContainer");
     userListPlaceholder = document.getElementById("UserPlaceholder");
     userModal = document.getElementById("userModal");
@@ -831,7 +836,7 @@ function initializeAdminPage(){
     printStatusNew = document.getElementById("printStatusNew");
     printCreationDate = document.getElementById("printCreationDate");
     printCancelBtn = document.getElementById("printCancel");
-    adminVarArr = [settingsBtn, userListContainer, userListPlaceholder, userModal, userTitle, userUID, userName,
+    adminVarArr = [userListContainer, userListPlaceholder, userModal, userTitle, userUID, userName,
         userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
         userDeleteBtn, guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
         guestShowPrintsBtn, guestDeleteBtn, printListModal, printListModalTitle, printListModalContainer,
@@ -839,10 +844,6 @@ function initializeAdminPage(){
         printStatusOther, printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan,
         printModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus,
         printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
-
-    allUserDBRef = firebase.database().ref("users/");
-    printDBRef = firebase.database().ref("prints/");
-    filamentDBRef = firebase.database().ref("filaments/");
 }
 
 function initializeFilamentPage(){
@@ -902,9 +903,6 @@ function initializeFilamentPage(){
         filamentThicknessM, filamentThicknessL, filamentThicknessOther, filamentEditThicknessNew,
         filamentEditCostPerRoll, filamentEditCostPerGram, filamentEditUserCount, filamentEditInfo, filamentEditUpdate,
         filamentEditCancel, offlineModal, offlineModalSpan, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
-
-    allUserDBRef = firebase.database().ref("users/");
-    filamentDBRef = firebase.database().ref("filaments/");
 }
 
 function verifyVariableIntegrity(variableArr){

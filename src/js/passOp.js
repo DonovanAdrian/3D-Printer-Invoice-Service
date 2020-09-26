@@ -6,10 +6,10 @@
 
 let encodeStore = ["0", "1", "2", "3"];
 let encodeNameBool = true;
-let userArr = [];
+let userArrPassOp = [];
 
 function injectUserArr(userArr){
-    this.userArr = userArr;
+    userArrPassOp = userArr;
 }
 
 function checkEncodeName(newEncodeName){
@@ -18,8 +18,8 @@ function checkEncodeName(newEncodeName){
     let encodeName;
     encodeNameBool = true;
 
-    for(let i = 0; i < userArr.length; i++){
-        encodeString = userArr[i].encodeStr;
+    for(let i = 0; i < userArrPassOp.length; i++){
+        encodeString = userArrPassOp[i].encodeStr;
         encodeKey = input.split(":");
         encodeName = encodeKey[0];
         if (encodeName == newEncodeName) {
