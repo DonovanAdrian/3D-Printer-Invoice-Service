@@ -19,21 +19,29 @@
  * NAVIGATION FUNCTION
  *
  * COMMON PAGE FUNCTIONS
+ *   - initializeDatabase()
+ *   - findUIDItemInArr()
+ *   - initializeNavBtns()
  *
  * LOGIN FUNCTIONS
  *   - fetchConfig()
  *   - DBFetchAllUsers()
+ *   - initializeLoginFunctions()
  *   - login()
  *   - guestLogin()
  *   - signUp()
  *
  * HOME FUNCTIONS
+ *   - initializeHomeFunctions()
  *
  * SETTINGS FUNCTIONS
+ *   - initializeSettingsFunctions()
  *
  * ADMIN FUNCTIONS
+ *   - initializeAdminFunctions()
  *
  * FILAMENT FUNCTIONS
+ *   - initializeFilamentFunctions()
  *
  * FETCH DATA FUNCTIONS
  *   - DBFetchCurrentUser()
@@ -234,6 +242,34 @@ window.onload = function() {
     let pageChosenBool = false;
     let pageInitializedBool = false;
 
+    window.addEventListener("online", function(){
+        offlineModal.style.display = "none";
+        location.reload();
+    });
+
+    window.addEventListener("offline", function() {
+        let now = 0;
+        let g = setInterval(function(){
+            now = now + 1000;
+            if(now >= 5000){
+                offlineModal.style.display = "block";
+                clearInterval(g);
+            }
+        }, 1000);
+    });
+
+    //close offlineModal on close
+    offlineModalSpan.onclick = function() {
+        offlineModal.style.display = "none";
+    };
+
+    //close offlineModal on click
+    window.onclick = function(event) {
+        if (event.target == offlineModal) {
+            offlineModal.style.display = "none";
+        }
+    };
+
     if (findPageElement != null) {
         console.log("Initialize Index Page");
         pageChosenBool = true;
@@ -242,7 +278,6 @@ window.onload = function() {
             console.log("Index Page Successfully Initialized");
             pageInitializedBool = true;
 
-            /*
             fetchConfig();
 
             while(true)
@@ -250,7 +285,8 @@ window.onload = function() {
                     break;
 
             DBFetchAllUsers();
-            */
+
+            initializeLoginFunctions();
         }
     }
     findPageElement = document.getElementById("homeTitleID");
@@ -277,6 +313,9 @@ window.onload = function() {
 
             loadFilamentData();
             DBFetchFilamentData();
+
+            initializeHomeFunctions();
+            initializeNavBtns();
         }
     }
     findPageElement = document.getElementById("settingsTitleID");
@@ -297,6 +336,9 @@ window.onload = function() {
 
             loadCurrentUser();
             DBUpdateCurrentUser();
+
+            initializeSettingsFunctions();
+            initializeNavBtns();
         }
     }
     findPageElement = document.getElementById("adminTitleID");
@@ -323,6 +365,9 @@ window.onload = function() {
 
             loadFilamentData();
             DBFetchFilamentData();
+
+            initializeAdminFunctions();
+            initializeNavBtns();
         }
     }
     findPageElement = document.getElementById("filamentTitleID");
@@ -346,6 +391,9 @@ window.onload = function() {
 
             loadFilamentData();
             DBFetchFilamentData();
+
+            initializeFilamentFunctions();
+            initializeNavBtns();
         }
     }
 
@@ -373,10 +421,10 @@ function navigation(page) {
             window.location.href = "settings.html";
             break;
         case 3:
-            window.location.href = "admin.html";
+            window.location.href = "index.html";
             break;
         case 4:
-            window.location.href = "index.html";
+            window.location.href = "admin.html";
             break;
         default:
             console.log("Page Navigation Error");
@@ -421,6 +469,24 @@ function findUIDItemInArr(item, userArray){
         }
     }
     return -1;
+}
+
+function initializeNavBtns(){
+    homeNavBtn.onclick = function() {
+        navigation(0);
+    };
+
+    filamentsNavBtn.onclick = function() {
+        navigation(1);
+    };
+
+    settingsNavBtn.onclick = function() {
+        navigation(2);
+    };
+
+    signOutNavBtn.onclick = function() {
+        navigation(3);
+    };
 }
 
 
@@ -571,31 +637,55 @@ function DBFetchAllUsers(){
     listeningFirebaseRefs.push(allUserDBRef);
 }
 
+function initializeLoginFunctions(){
+    loginBtn.innerHTML = "Login";
+    loginBtn.onclick = function() {
+        login();
+    };
+
+    loginGuestBtn.innerHTML = "Continue As Guest";
+    loginGuestBtn.onclick = function() {
+        guestLogin();
+    };
+
+    signUpFld.onclick = function() {
+        signUp();
+    };
+}
+
 function login(){
 
 }
 
 function guestLogin(){
-
+    //open guestModal
 }
 
 function signUp(){
-
+    //open signUpModal
 }
 
 
 
 //HOME FUNCTIONS
-//home fxns here
+function initializeHomeFunctions() {
+
+}
 
 //SETTINGS FUNCTIONS
-//settings fxns here
+function initializeSettingsFunctions() {
+
+}
 
 //ADMIN FUNCTIONS
-//admin fxns here
+function initializeAdminFunctions() {
+
+}
 
 //FILAMENT FUNCTIONS
-//filament fxns here
+function initializeFilamentFunctions() {
+
+}
 
 //FETCH DATA FUNCTIONS
 function DBFetchCurrentUser(){
@@ -631,6 +721,8 @@ function loadConfig(){
 
 function loadCurrentUser(){
     //load
+    //show filaments nav btn
+    //show admin btn (with try/catch)
 }
 
 function loadAllUsers(){
