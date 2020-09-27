@@ -37,6 +37,57 @@
     </div>
 </div>
 
+<div id="signUpModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeSignUp">&times;</span>
+            <h2>Sign Up</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p>User Name:</p>
+            <input type="text" id="signUpUserNameInput" placeholder="Input User Name" class="dataInp">
+            <p>Pin:</p>
+            <input type="text" id="signUpPinInput" placeholder="Input Pin" class="dataInp">
+            <p>Confirm Pin:</p>
+            <input type="text" id="signUpPinConfInput" placeholder="Confirm Pin" class="dataInp">
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="signUpContinue">Continue</h3>
+            <h3 style="float: right;padding-right: 10px" id="signUpCancel">Cancel</h3>
+        </div>
+    </div>
+</div>
+
+<div id="guestLoginModal" class="modal">
+    <div class="modal-content">
+
+        <!--Modal Header-->
+        <div class="modal-header">
+            <span class="close" id="closeGuestLogin">&times;</span>
+            <h2>Guest Login Information</h2>
+        </div>
+
+        <!--Modal Body-->
+        <div class="modal-body">
+            <p>Please take note of the below information, this will be needed to access your prints in the future!</p>
+            <p id="guestUserName">Loading...</p>
+            <p id="guestPin">Loading...</p>
+        </div>
+
+        <!--Modal Footer-->
+        <div class="modal-footer">
+            <h3 style="float: left;padding-left: 10px" id="guestLoginContinue">Continue</h3>
+            <h3 style="float: right;padding-right: 10px" id="guestLoginCancel">Cancel</h3>
+        </div>
+    </div>
+</div>
+
 <div id="offlineModal" class="modal">
     <div class="modal-content">
 
