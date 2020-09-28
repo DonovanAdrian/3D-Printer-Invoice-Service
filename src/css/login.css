@@ -97,6 +97,12 @@ button {
     cursor: pointer;
 }
 
+.modal-footer {
+    padding-bottom: 50px;
+    background-color: #32a2cf;
+    color: white;
+}
+
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
     to {top:0; opacity:1}
