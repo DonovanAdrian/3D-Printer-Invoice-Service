@@ -713,7 +713,7 @@ function guestLogin() {
             pin: guestPinEncode,
             admin: 0};
 
-        addNewUserToDB(user);
+        addNewUserToDB(user, true);
     };
 
     guestLoginCancel.onclick = function() {
@@ -763,13 +763,11 @@ function signUp() {
                 name: signUpNameInput.value,
                 userName: signUpUserNameInput.value,
                 pin: encode(signUpPinInput.value),
-                admin: 0
-            };
+                admin: 0};
 
-            addNewUserToDB(user);
+            addNewUserToDB(user, false);
         } else {
             alert(errorString);
-            errorString = "";
         }
     };
 
@@ -840,10 +838,23 @@ function generateGuestPin() {
     return tempPinGen;
 }
 
-function addNewUserToDB(user){
-    //Nothing yet...
-    console.log(user);
-    console.log("This Will Add The User To The DB And Then Redirect To Home");
+function addNewUserToDB(userData, guestBool){
+    firebase.database().ref("users/" + userData.uid).set({
+        uid: userData.uid,
+        userName: userData.userName,
+        pin: userData.pin,
+        admin: userData.admin});
+
+    if (!guestBool)
+        firebase.database().ref("users/" + userData.uid).update({
+            name: user.name});
+
+    console.log(userData);
+
+    userArr.push(userData);
+    user = userData;
+
+    navigation(0);
 }
 
 
