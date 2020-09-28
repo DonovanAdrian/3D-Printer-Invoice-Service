@@ -5,28 +5,29 @@
  */
 
 let encodeStore = ["0", "1", "2", "3"];
-let encodeNameBool = true;
+let encodeNameBool = false;
 let userArrPassOp = [];
 
-function injectUserArr(userArr){
-    userArrPassOp = userArr;
+function injectUserArr(userArrInput){
+    userArrPassOp = userArrInput;
 }
 
-function checkEncodeName(newEncodeName){
+function checkEncodeName(newEncodeName, input){
     let encodeString;
     let encodeKey;
     let encodeName;
     encodeNameBool = true;
 
-    for(let i = 0; i < userArrPassOp.length; i++){
-        encodeString = userArrPassOp[i].encodeStr;
-        encodeKey = input.split(":");
-        encodeName = encodeKey[0];
-        if (encodeName == newEncodeName) {
-            encodeNameBool = false;
-            break;
+    if (userArrPassOp.length != 0)
+        for(let i = 0; i < userArrPassOp.length; i++){
+            encodeString = userArrPassOp[i].encodeStr;
+            encodeKey = input.split(":");
+            encodeName = encodeKey[0];
+            if (encodeName == newEncodeName) {
+                encodeNameBool = false;
+                break;
+            }
         }
-    }
 }
 
 function whatIsInt(rChar){
@@ -378,9 +379,11 @@ function encode(input) {
         for (let i = 0; i < nameGenNum; i++) {
             encodeName = encodeName + getRandomAlphabet();
         }
+
         nameGenNum = getNameGenNum();
-        checkEncodeName(encodeName);
+        checkEncodeName(encodeName, input);
     }
+
     encodeNameBool = false;
     encodeStr = encodeStr + encodeName;
     encodeStr = encodeStr + ":";
