@@ -24,12 +24,17 @@
  *   - initializeNavBtns()
  *
  * LOGIN FUNCTIONS
- *   - fetchConfig()
+ *   - initializeLoginFunctionality()
+ *   - initializeDatabaseForLogin()
  *   - DBFetchAllUsers()
  *   - initializeLoginFunctions()
  *   - login()
  *   - guestLogin()
  *   - signUp()
+ *   - generateNewUID()
+ *   - generateGuestUserName()
+ *   - generateGuestPin()
+ *   - addNewUserToDB()
  *
  * HOME FUNCTIONS
  *   - initializeHomeFunctions()
@@ -106,7 +111,6 @@ let filament = null;
 let userArr = [];
 let printArr = [];
 let filamentArr = [];
-let DBInitialized = false;
 
 //LOGIN VARS
 let userNameInput;
@@ -117,6 +121,20 @@ let loginInfoFail;
 let loginInfoSuccess;
 let signUpFld;
 let loginVarArr;
+let signUpModal;
+let closeSignUp;
+let signUpNameInput;
+let signUpUserNameInput;
+let signUpPinInput;
+let signUpPinConfInput;
+let signUpContinue;
+let signUpCancel;
+let guestLoginModal;
+let closeGuestLogin;
+let guestLoginUserName;
+let guestLoginPin;
+let guestLoginContinue;
+let guestLoginCancel;
 
 //HOME VARS
 let printListContainer;
@@ -242,34 +260,6 @@ window.onload = function() {
     let pageChosenBool = false;
     let pageInitializedBool = false;
 
-    window.addEventListener("online", function(){
-        offlineModal.style.display = "none";
-        location.reload();
-    });
-
-    window.addEventListener("offline", function() {
-        let now = 0;
-        let g = setInterval(function(){
-            now = now + 1000;
-            if(now >= 5000){
-                offlineModal.style.display = "block";
-                clearInterval(g);
-            }
-        }, 1000);
-    });
-
-    //close offlineModal on close
-    offlineModalSpan.onclick = function() {
-        offlineModal.style.display = "none";
-    };
-
-    //close offlineModal on click
-    window.onclick = function(event) {
-        if (event.target == offlineModal) {
-            offlineModal.style.display = "none";
-        }
-    };
-
     if (findPageElement != null) {
         console.log("Initialize Index Page");
         pageChosenBool = true;
@@ -278,15 +268,7 @@ window.onload = function() {
             console.log("Index Page Successfully Initialized");
             pageInitializedBool = true;
 
-            fetchConfig();
-
-            while(true)
-                if(DBInitialized)
-                    break;
-
-            DBFetchAllUsers();
-
-            initializeLoginFunctions();
+            initializeLoginFunctionality();
         }
     }
     findPageElement = document.getElementById("homeTitleID");
@@ -300,10 +282,6 @@ window.onload = function() {
 
             loadConfig();
             initializeDatabase();
-
-            while(true)
-                if(DBInitialized)
-                    break;
 
             loadCurrentUser();
             DBUpdateCurrentUser();
@@ -330,10 +308,6 @@ window.onload = function() {
             loadConfig();
             initializeDatabase();
 
-            while(true)
-                if(DBInitialized)
-                    break;
-
             loadCurrentUser();
             DBUpdateCurrentUser();
 
@@ -352,10 +326,6 @@ window.onload = function() {
 
             loadConfig();
             initializeDatabase();
-
-            while(true)
-                if(DBInitialized)
-                    break;
 
             loadAllUsers();
             DBFetchAllUsers();
@@ -382,10 +352,6 @@ window.onload = function() {
             loadConfig();
             initializeDatabase();
 
-            while(true)
-                if(DBInitialized)
-                    break;
-
             loadAllUsers();
             DBFetchAllUsers();
 
@@ -399,6 +365,34 @@ window.onload = function() {
 
     if (!pageChosenBool || !pageInitializedBool) {
         alert("Page Not Properly Loaded! Please Turn Off AdBlockers And Refresh!");
+    } else {
+        window.addEventListener("online", function(){
+            offlineModal.style.display = "none";
+            location.reload();
+        });
+
+        window.addEventListener("offline", function() {
+            let now = 0;
+            let g = setInterval(function(){
+                now = now + 1000;
+                if(now >= 5000){
+                    offlineModal.style.display = "block";
+                    clearInterval(g);
+                }
+            }, 1000);
+        });
+
+        //close offlineModal on close
+        offlineModalSpan.onclick = function() {
+            offlineModal.style.display = "none";
+        };
+
+        //close offlineModal on click
+        window.onclick = function(event) {
+            if (event.target == offlineModal) {
+                offlineModal.style.display = "none";
+            }
+        };
     }
 };
 
@@ -435,7 +429,7 @@ function navigation(page) {
 
 
 //COMMON PAGE FUNCTIONS
-function initializeDatabase(){
+function initializeDatabase() {
     console.log("Initializing Database");
 
     firebase.initializeApp(configObj);
@@ -457,11 +451,10 @@ function initializeDatabase(){
         }
     });
 
-    DBInitialized = true;
     console.log("Database Successfully Initialized!");
 }
 
-function findUIDItemInArr(item, userArray){
+function findUIDItemInArr(item, userArray) {
     for(var i = 0; i < userArray.length; i++){
         if(userArray[i].uid == item){
             console.log("Found item: " + item);
@@ -492,7 +485,7 @@ function initializeNavBtns(){
 
 
 //LOGIN FUNCTIONS
-function fetchConfig(){
+function initializeLoginFunctionality() {
     console.log("Fetching Config");
     let file = "txt/config.txt";
 
@@ -593,14 +586,43 @@ function fetchConfig(){
                     console.log("Config Successfully Initialized!");
 
                     sessionStorage.setItem("config", JSON.stringify(configObj));
-                    initializeDatabase();
+                    initializeDatabaseForLogin();
                 }
             }
         }
     });
 }
 
-function DBFetchAllUsers(){
+function initializeDatabaseForLogin() {
+    console.log("Initializing Database");
+
+    firebase.initializeApp(configObj);
+    firebase.analytics();
+
+    firebase.auth().signInAnonymously().catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log("Firebase Error: " + errorCode + ", " + errorMessage);
+    });
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // User is signed in.
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+        } else {
+            // User is signed out.
+        }
+    });
+
+    console.log("Database Successfully Initialized!");
+
+    DBFetchAllUsers();
+
+    initializeLoginFunctions();
+}
+
+function DBFetchAllUsers() {
     console.log("Fetching Users From Database");
 
     allUserDBRef = firebase.database().ref("users/");
@@ -637,7 +659,7 @@ function DBFetchAllUsers(){
     listeningFirebaseRefs.push(allUserDBRef);
 }
 
-function initializeLoginFunctions(){
+function initializeLoginFunctions() {
     loginBtn.innerHTML = "Login";
     loginBtn.onclick = function() {
         login();
@@ -653,16 +675,175 @@ function initializeLoginFunctions(){
     };
 }
 
-function login(){
+function login() {
+    let validUser = false;
+    if(userArr.length != 0)
+        for(let i = 0; i < userArr.length; i++) {
+            if(userArr[i].userName == userNameInput)
+                if(decode(userArr[i].pin) == pinInput) {
+                    loginInfoFail.innerHTML = "";
+                    loginInfoSuccess.innerHTML = userArr[i].userName + " Authenticated!";
+                    validUser = true;
+                    user = userArr[i];
+                    break;
+                }
+        }
 
+    if(validUser)
+        navigation(0);
+    else
+        loginInfoFail.innerHTML = "User Name Or Pin Incorrect!";
 }
 
-function guestLogin(){
-    //open guestModal
+function guestLogin() {
+    injectUserArr(userArr);
+
+    let guestUIDGen = generateNewUID();
+    let guestUserNameGen = generateGuestUserName();
+    let guestPinGen = generateGuestPin();
+    let guestPinEncode = encode(guestPinGen);
+
+    guestLoginUserName.innerHTML = guestUserNameGen;
+    guestLoginPin.innerHTML = guestPinGen;
+
+    guestLoginContinue.onclick = function() {
+        user = {
+            uid: guestUIDGen,
+            userName: guestUserNameGen,
+            pin: guestPinEncode,
+            admin: 0};
+
+        addNewUserToDB(user);
+    };
+
+    guestLoginCancel.onclick = function() {
+        guestLoginModal.style.display = "none";
+    };
+
+    closeGuestLogin.onclick = function() {
+        guestLoginModal.style.display = "none";
+    };
+
+    //close offlineModal on click
+    window.onclick = function(event) {
+        if (event.target == guestLoginModal) {
+            guestLoginModal.style.display = "none";
+        }
+    };
+
+    guestLoginModal.style.display = "block";
 }
 
-function signUp(){
-    //open signUpModal
+function signUp() {
+    signUpContinue.onclick = function() {
+        let inputInvalid = false;
+        let errorString = "";
+
+        if(signUpNameInput.value == "" || signUpUserNameInput.value == "" || signUpPinInput.value == "" ||
+            signUpPinConfInput.value == "") {
+            inputInvalid = true;
+            errorString = "An Input Field Is Empty! Please Fill All Fields And Try Again!";
+        }
+
+        if(signUpPinInput.value != signUpPinConfInput.value) {
+            inputInvalid = true;
+            errorString = "The Pins You Entered Do Not Match! Please Re-Enter Your Pins And Try Again!";
+        }
+
+        if(userArr.length != 0)
+            for(let i = 0; i < userArr.length; i++)
+                if(userArr[i].userName == signUpUserNameInput.value) {
+                    inputInvalid = true;
+                    errorString = "That User Name Is Already Taken! Please Pick Another User Name And Try Again.";
+                }
+
+        if(!inputInvalid) {
+            user = {
+                uid: generateNewUID(),
+                name: signUpNameInput.value,
+                userName: signUpUserNameInput.value,
+                pin: encode(signUpPinInput.value),
+                admin: 0
+            };
+
+            addNewUserToDB(user);
+        } else {
+            alert(errorString);
+            errorString = "";
+        }
+    };
+
+    signUpCancel.onclick = function() {
+        signUpModal.style.display = "none";
+        signUpNameInput.value = "";
+        signUpUserNameInput.value = "";
+        signUpPinInput.value = "";
+        signUpPinConfInput.value = "";
+    };
+
+    closeSignUp.onclick = function() {
+        signUpModal.style.display = "none";
+    };
+
+    //close offlineModal on click
+    window.onclick = function(event) {
+        if (event.target == signUpModal) {
+            signUpModal.style.display = "none";
+        }
+    };
+
+    signUpModal.style.display = "block";
+}
+
+function generateNewUID() {
+    let newUid = firebase.database().ref("users").push();
+
+    newUid = newUid.toString();
+    newUid = newUid.substr(55, 64);
+
+    return newUid;
+}
+
+function generateGuestUserName() {
+    let tempUserNameAppend = "";
+    let userNameGenLength = getRandomNumber();
+    let userNameGenExists = false;
+
+    while(true) {
+        while (true)
+            if (userNameGenLength < 3 || userNameGenLength > 6)
+                userNameGenLength = getRandomNumber();
+            else
+                break;
+
+        for (let i = 0; i < userNameGenLength; i++)
+            tempUserNameAppend += getRandomNumber();
+
+        if (userArr != null)
+            for (let i = 0; i < userArr.length; i++)
+                if(userArr[i].userName == tempUserNameAppend)
+                    userNameGenExists = true;
+
+        if (!userNameGenExists)
+            break;
+    }
+
+    return "guest-" + tempUserNameAppend;
+}
+
+function generateGuestPin() {
+    let tempPinGen = "";
+
+    for(let i = 0; i < 5; i++)
+        tempPinGen += getRandomNumber();
+
+    return tempPinGen;
+}
+
+function addNewUserToDB(user){
+    //Nothing yet...
+    console.log(user);
+    console.log("This Will Add The User To The DB And Then Redirect To Home");
 }
 
 
@@ -800,8 +981,24 @@ function initializeIndexPage(){
     loginInfoFail = document.getElementById("loginInfo");
     loginInfoSuccess = document.getElementById("loginInfo2");
     signUpFld = document.getElementById("signUpFld");
-    loginVarArr = [userNameInput, pinInput, loginBtn, loginGuestBtn, loginInfoFail, loginInfoSuccess, signUpFld,
-        offlineModal, offlineModalSpan];
+    signUpModal = document.getElementById("signUpModal");
+    closeSignUp = document.getElementById("closeSignUp");
+    signUpNameInput = document.getElementById("signUpNameInput");
+    signUpUserNameInput = document.getElementById("signUpUserNameInput");
+    signUpPinInput = document.getElementById("signUpPinInput");
+    signUpPinConfInput = document.getElementById("signUpPinConfInput");
+    signUpContinue = document.getElementById("signUpContinue");
+    signUpCancel = document.getElementById("signUpCancel");
+    guestLoginModal = document.getElementById("guestLoginModal");
+    closeGuestLogin = document.getElementById("closeGuestLogin");
+    guestLoginUserName = document.getElementById("guestUserName");
+    guestLoginPin = document.getElementById("guestPin");
+    guestLoginContinue = document.getElementById("guestLoginContinue");
+    guestLoginCancel = document.getElementById("guestLoginCancel");
+    loginVarArr = [signUpModal, closeSignUp, signUpNameInput, signUpUserNameInput, signUpPinInput, signUpPinConfInput,
+        signUpContinue, signUpCancel, guestLoginModal, closeGuestLogin, guestLoginUserName, guestLoginPin,
+        guestLoginContinue, guestLoginCancel, userNameInput, pinInput, loginBtn, loginGuestBtn, loginInfoFail,
+        loginInfoSuccess, signUpFld, offlineModal, offlineModalSpan];
 }
 
 function initializeHomePage(){
