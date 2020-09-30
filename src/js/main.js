@@ -66,6 +66,23 @@
  *   - DBDeletePrintData(uid)
  *   - DBDeleteFilamentData(uid)
  *
+ * CREATE ELEMENT FUNCTIONS
+ *   - createUserElement(createUserData)
+ *   - createPrintElement(createPrintData)
+ *   - createFilamentElement(createFilamentData)
+ *
+ * UPDATE ELEMENT FUNCTIONS
+ *   - updateUserElement(updateUserData)
+ *   - updatePrintElement(updatePrintData)
+ *   - updateFilamentElement(updateFilamentData)
+ *
+ * DELETE ELEMENT FUNCTIONS
+ *   - deleteUserElement(deleteUserUID)
+ *   - deletePrintElement(deletePrintUID)
+ *   - deleteFilamentElement(deleteFilamentUID)
+ *
+ *
+ *
  * INITIALIZATION FUNCTIONS
  *   - initializeIndexPage()
  *   - initializeHomePage()
@@ -854,14 +871,22 @@ function addNewUserToDB(userData, guestBool){
 //HOME FUNCTIONS
 //home fxns here
 
+
+
 //SETTINGS FUNCTIONS
 //setting fxns here
+
+
 
 //ADMIN FUNCTIONS
 //admin fxns here
 
+
+
 //FILAMENT FUNCTIONS
 //filament fxns here
+
+
 
 //FETCH DATA FUNCTIONS
 function DBFetchCurrentUser(){
@@ -1017,6 +1042,57 @@ function DBDeleteFilamentData(uid){
 
     //save
     //reload
+}
+
+
+
+//CREATE ELEMENT FUNCTIONS
+function createUserElement(createUserData){
+
+}
+
+function createPrintElement(createPrintData){
+
+}
+
+function createFilamentElement(createFilamentData){
+
+}
+
+
+
+//UPDATE ELEMENT FUNCTIONS
+function updateUserElement(updateUserData){
+
+}
+
+function updatePrintElement(updatePrintData){
+
+}
+
+function updateFilamentElement(updateFilamentData){
+
+}
+
+
+
+//DELETE ELEMENT FUNCTIONS
+function deleteUserElement(deleteUserUID){
+    //remove element with deleteUserUID
+
+    DBDeleteUserData(deleteUserUID);
+}
+
+function deletePrintElement(deletePrintUID){
+    //remove element with deletePrintUID
+
+    DBDeletePrintData(deletePrintUID);
+}
+
+function deleteFilamentElement(deleteFilamentUID){
+    //remove element with deleteFilamentUID
+
+    DBDeleteFilamentData(deleteFilamentUID);
 }
 
 
