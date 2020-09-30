@@ -37,16 +37,12 @@
  *   - addNewUserToDB()
  *
  * HOME FUNCTIONS
- *   - initializeHomeFunctions()
  *
  * SETTINGS FUNCTIONS
- *   - initializeSettingsFunctions()
  *
  * ADMIN FUNCTIONS
- *   - initializeAdminFunctions()
  *
  * FILAMENT FUNCTIONS
- *   - initializeFilamentFunctions()
  *
  * FETCH DATA FUNCTIONS
  *   - DBFetchCurrentUser()
@@ -292,7 +288,6 @@ window.onload = function() {
             loadFilamentData();
             DBFetchFilamentData();
 
-            initializeHomeFunctions();
             initializeNavBtns();
         }
     }
@@ -311,7 +306,6 @@ window.onload = function() {
             loadCurrentUser();
             DBUpdateCurrentUser();
 
-            initializeSettingsFunctions();
             initializeNavBtns();
         }
     }
@@ -336,7 +330,6 @@ window.onload = function() {
             loadFilamentData();
             DBFetchFilamentData();
 
-            initializeAdminFunctions();
             initializeNavBtns();
         }
     }
@@ -358,7 +351,6 @@ window.onload = function() {
             loadFilamentData();
             DBFetchFilamentData();
 
-            initializeFilamentFunctions();
             initializeNavBtns();
         }
     }
@@ -860,48 +852,104 @@ function addNewUserToDB(userData, guestBool){
 
 
 //HOME FUNCTIONS
-function initializeHomeFunctions() {
-
-}
+//home fxns here
 
 //SETTINGS FUNCTIONS
-function initializeSettingsFunctions() {
-
-}
+//setting fxns here
 
 //ADMIN FUNCTIONS
-function initializeAdminFunctions() {
-
-}
+//admin fxns here
 
 //FILAMENT FUNCTIONS
-function initializeFilamentFunctions() {
-
-}
+//filament fxns here
 
 //FETCH DATA FUNCTIONS
 function DBFetchCurrentUser(){
+    console.log("Fetching Current User From Database");
 
     currentUserDBRef = firebase.database().ref("users/" + user.uid);
-    //fetch
 
-    //save
+    var fetchPosts = function (postRef) {
+        postRef.on('child_added', function (data) {
+            console.log(data);
+        });
+
+        postRef.on('child_changed', function (data) {
+            console.log(data);
+        });
+
+        postRef.on('child_removed', function (data) {
+            console.log(data)
+        });
+    };
+
+    fetchPosts(currentUserDBRef);
+
+    listeningFirebaseRefs.push(currentUserDBRef);
 }
 
 function DBFetchPrintData(){
+    console.log("Fetching Prints From Database");
 
     printDBRef = firebase.database().ref("prints/");
-    //fetch
 
-    //save
+    var fetchPosts = function (postRef) {
+        postRef.on('child_added', function (data) {
+            var i = findUIDItemInArr(data.key, printArr);
+            if(i == -1) {
+                printArr.push(data.val());
+            }
+        });
+
+        postRef.on('child_changed', function (data) {
+            var i = findUIDItemInArr(data.key, printArr);
+            if(printArr[i] != data.val() && i != -1){
+                //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+                printArr[i] = data;
+            }
+        });
+
+        postRef.on('child_removed', function (data) {
+            var i = findUIDItemInArr(data.key, printArr);
+            printArr.splice(i, 1);
+        });
+    };
+
+    fetchPosts(printDBRef);
+
+    listeningFirebaseRefs.push(printDBRef);
 }
 
 function DBFetchFilamentData(){
+    console.log("Fetching Filaments From Database");
 
     filamentDBRef = firebase.database().ref("filaments/");
-    //fetch
 
-    //save
+    var fetchPosts = function (postRef) {
+        postRef.on('child_added', function (data) {
+            var i = findUIDItemInArr(data.key, filamentArr);
+            if(i == -1) {
+                filamentArr.push(data.val());
+            }
+        });
+
+        postRef.on('child_changed', function (data) {
+            var i = findUIDItemInArr(data.key, filamentArr);
+            if(filamentArr[i] != data.val() && i != -1){
+                //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
+                filamentArr[i] = data;
+            }
+        });
+
+        postRef.on('child_removed', function (data) {
+            var i = findUIDItemInArr(data.key, filamentArr);
+            filamentArr.splice(i, 1);
+        });
+    };
+
+    fetchPosts(filamentDBRef);
+
+    listeningFirebaseRefs.push(filamentDBRef);
 }
 
 
@@ -912,21 +960,19 @@ function loadConfig(){
 }
 
 function loadCurrentUser(){
-    //load
-    //show filaments nav btn
-    //show admin btn (with try/catch)
+    user = JSON.parse(sessionStorage.user);
 }
 
 function loadAllUsers(){
-    //load
+    userArr = JSON.parse(sessionStorage.userArr);
 }
 
 function loadPrintData(){
-    //load
+    printArr = JSON.parse(sessionStorage.printArr);
 }
 
 function loadFilamentData(){
-    //load
+    filamentArr = JSON.parse(sessionStorage.filamentArr);
 }
 
 
