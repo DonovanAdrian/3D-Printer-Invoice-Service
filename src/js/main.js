@@ -896,15 +896,57 @@ function DBFetchCurrentUser(){
 
     var fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
-            console.log(data);
+            console.log(data.key);
+
+            if (data.key == "name"){
+                user.name = data.value;
+            } else if (data.key == "userName"){
+                user.userName = data.value;
+            } else if (data.key == "pin"){
+                user.pin = data.value;
+            } else if (data.key == "admin"){
+                user.admin = data.value;
+            } else if (data.key == "prints"){
+                user.prints = data.value;
+            } else {
+                console.log("Unrecognized Data Input");
+            }
         });
 
         postRef.on('child_changed', function (data) {
-            console.log(data);
+            console.log(data.key);
+
+            if (data.key == "name"){
+                user.name = data.value;
+            } else if (data.key == "userName"){
+                user.userName = data.value;
+            } else if (data.key == "pin"){
+                user.pin = data.value;
+            } else if (data.key == "admin"){
+                user.admin = data.value;
+            } else if (data.key == "prints"){
+                user.prints = data.value;
+            } else {
+                console.log("Unrecognized Data Input");
+            }
         });
 
         postRef.on('child_removed', function (data) {
-            console.log(data)
+            console.log(data.key);
+
+            if (data.key == "name"){
+                user.name = "";
+            } else if (data.key == "userName"){
+                user.userName = "";
+            } else if (data.key == "pin"){
+                user.pin = "";
+            } else if (data.key == "admin"){
+                user.admin = 0;
+            } else if (data.key == "prints"){
+                user.prints = [];
+            } else {
+                console.log("Unrecognized Data Input");
+            }
         });
     };
 
@@ -1003,22 +1045,55 @@ function loadFilamentData(){
 
 
 //UPDATE DATA FUNCTIONS
-function DBUpdateCurrentUser(user){
-    //update
+function DBUpdateCurrentUser(DBUserData){
+    user = DBUserData;
 
-    //save
+    firebase.database().ref("users/" + DBUserData.uid).update({
+        uid: DBUserData.uid,
+        userName: DBUserData.userName,
+        pin: DBUserData.pin,
+        prints: DBUserData.prints,
+        admin: DBUserData.admin
+    });
+
+    if (DBUserData.name != null) {
+        firebase.database().ref("users/" + DBUserData.uid).update({
+            name: DBUserData.name
+        });
+    }
 }
 
-function DBUpdatePrintData(print){
-    //update
+function DBUpdatePrintData(DBPrintData){
+    let i = findUIDItemInArr(DBPrintData.uid, printArr);
+    printArr[i] = DBPrintData;
 
-    //save
+    firebase.database().ref("prints/" + DBPrintData.uid).update({
+        uid: DBPrintData.uid,
+        title: DBPrintData.title,
+        filament: DBPrintData.filament,
+        time: DBPrintData.time,
+        size: DBPrintData.size,
+        infill: DBPrintData.infill,
+        supports: DBPrintData.supports,
+        price: DBPrintData.price,
+        status: DBPrintData.status,
+        creationDate: DBPrintData.creationDate
+    });
 }
 
-function DBUpdateFilamentData(filament){
-    //update
+function DBUpdateFilamentData(DBFilamentData){
+    let i = findUIDItemInArr(DBFilamentData.uid, filamentArr);
+    filamentArr[i] = DBFilamentData;
 
-    //save
+    firebase.database().ref("prints/" + DBPrintData.uid).update({
+        uid: DBFilamentData.uid,
+        title: DBFilamentData.title,
+        type: DBFilamentData.type,
+        weight: DBFilamentData.weight,
+        thickness: DBFilamentData.thickness,
+        costPerRoll: DBFilamentData.costPerRoll,
+        costPerGram: DBFilamentData.costPerGram
+    });
 }
 
 
