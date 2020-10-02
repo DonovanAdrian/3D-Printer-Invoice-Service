@@ -62,9 +62,9 @@
  *   - DBUpdateFilamentData(filament)
  *
  * DELETE DATA FUNCTIONS
- *   - DBDeleteUserData(uid)
- *   - DBDeletePrintData(uid)
- *   - DBDeleteFilamentData(uid)
+ *   - DBDeleteUserData(deleteUserUID)
+ *   - DBDeletePrintData(deletePrintUID)
+ *   - DBDeleteFilamentData(deleteFilamentUID)
  *
  * CREATE ELEMENT FUNCTIONS
  *   - createUserElement(createUserData)
@@ -112,6 +112,7 @@ let homeNavBtn;
 let filamentsNavBtn;
 let settingsNavBtn;
 let signOutNavBtn;
+let elementPlaceholder;
 let configObj = {};
 let listeningFirebaseRefs = [];
 let allUserDBRef;
@@ -151,7 +152,6 @@ let guestLoginCancel;
 
 //HOME VARS
 let printListContainer;
-let printPlaceholder;
 let upgradeUserBtn;
 let addPrintBtn;
 let printDeleteBtn;
@@ -188,7 +188,6 @@ let settingsVarArr;
 
 //ADMIN VARS
 let userListContainer;
-let userListPlaceholder;
 let userModal;
 let userTitle;
 let userUID;
@@ -226,7 +225,6 @@ let adminVarArr;
 
 //FILAMENT VARS
 let filamentListContainer;
-let filamentPlaceholder;
 let addFilamentBtn;
 let filamentModal;
 let filamentTitle;
@@ -445,16 +443,16 @@ function initializeDatabase() {
     firebase.analytics();
 
     firebase.auth().signInAnonymously().catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        let errorCode = error.code;
+        let errorMessage = error.message;
         console.log("Firebase Error: " + errorCode + ", " + errorMessage);
     });
 
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-            var isAnonymous = user.isAnonymous;
-            var uid = user.uid;
+            let isAnonymous = user.isAnonymous;
+            let uid = user.uid;
         } else {
             // User is signed out.
         }
@@ -464,7 +462,7 @@ function initializeDatabase() {
 }
 
 function findUIDItemInArr(item, userArray) {
-    for(var i = 0; i < userArray.length; i++){
+    for(let i = 0; i < userArray.length; i++){
         if(userArray[i].uid == item){
             console.log("Found item: " + item);
             return i;
@@ -603,28 +601,7 @@ function initializeLoginFunctionality() {
 }
 
 function initializeDatabaseForLogin() {
-    console.log("Initializing Database");
-
-    firebase.initializeApp(configObj);
-    firebase.analytics();
-
-    firebase.auth().signInAnonymously().catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log("Firebase Error: " + errorCode + ", " + errorMessage);
-    });
-
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            // User is signed in.
-            var isAnonymous = user.isAnonymous;
-            var uid = user.uid;
-        } else {
-            // User is signed out.
-        }
-    });
-
-    console.log("Database Successfully Initialized!");
+    initializeDatabase();
 
     DBFetchAllUsers();
 
@@ -636,7 +613,7 @@ function DBFetchAllUsers() {
 
     allUserDBRef = firebase.database().ref("users/");
 
-    var fetchPosts = function (postRef) {
+    let fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
             userArr.push(data.val());
 
@@ -646,7 +623,7 @@ function DBFetchAllUsers() {
         });
 
         postRef.on('child_changed', function (data) {
-            var i = findUIDItemInArr(data.key, userArr);
+            let i = findUIDItemInArr(data.key, userArr);
             if(userArr[i] != data.val() && i != -1){
                 //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
                 userArr[i] = data;
@@ -658,7 +635,7 @@ function DBFetchAllUsers() {
         });
 
         postRef.on('child_removed', function (data) {
-            var i = findUIDItemInArr(data.key, userArr);
+            let i = findUIDItemInArr(data.key, userArr);
             userArr.splice(i, 1);
         });
     };
@@ -894,7 +871,7 @@ function DBFetchCurrentUser(){
 
     currentUserDBRef = firebase.database().ref("users/" + user.uid);
 
-    var fetchPosts = function (postRef) {
+    let fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
             console.log(data.key);
 
@@ -960,16 +937,16 @@ function DBFetchPrintData(){
 
     printDBRef = firebase.database().ref("prints/");
 
-    var fetchPosts = function (postRef) {
+    let fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
-            var i = findUIDItemInArr(data.key, printArr);
+            let i = findUIDItemInArr(data.key, printArr);
             if(i == -1) {
                 printArr.push(data.val());
             }
         });
 
         postRef.on('child_changed', function (data) {
-            var i = findUIDItemInArr(data.key, printArr);
+            let i = findUIDItemInArr(data.key, printArr);
             if(printArr[i] != data.val() && i != -1){
                 //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
                 printArr[i] = data;
@@ -977,7 +954,7 @@ function DBFetchPrintData(){
         });
 
         postRef.on('child_removed', function (data) {
-            var i = findUIDItemInArr(data.key, printArr);
+            let i = findUIDItemInArr(data.key, printArr);
             printArr.splice(i, 1);
         });
     };
@@ -992,16 +969,16 @@ function DBFetchFilamentData(){
 
     filamentDBRef = firebase.database().ref("filaments/");
 
-    var fetchPosts = function (postRef) {
+    let fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
-            var i = findUIDItemInArr(data.key, filamentArr);
+            let i = findUIDItemInArr(data.key, filamentArr);
             if(i == -1) {
                 filamentArr.push(data.val());
             }
         });
 
         postRef.on('child_changed', function (data) {
-            var i = findUIDItemInArr(data.key, filamentArr);
+            let i = findUIDItemInArr(data.key, filamentArr);
             if(filamentArr[i] != data.val() && i != -1){
                 //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
                 filamentArr[i] = data;
@@ -1009,7 +986,7 @@ function DBFetchFilamentData(){
         });
 
         postRef.on('child_removed', function (data) {
-            var i = findUIDItemInArr(data.key, filamentArr);
+            let i = findUIDItemInArr(data.key, filamentArr);
             filamentArr.splice(i, 1);
         });
     };
@@ -1099,39 +1076,48 @@ function DBUpdateFilamentData(DBFilamentData){
 
 
 //DELETE DATA FUNCTIONS
-function DBDeleteUserData(uid){
-    //delete
+function DBDeleteUserData(deleteUserUID){
+    firebase.database().ref("users/").child(deleteUserUID).remove();
 
-    //save
-    //reload
+    let i = findUIDItemInArr(deleteUserUID, userArr);
+    userArr.splice(i, 1);
 }
-function DBDeletePrintData(uid){
-    //delete
+function DBDeletePrintData(deletePrintUID){
+    firebase.database().ref("users/").child(deletePrintUID).remove();
 
-    //save
-    //reload
+    let i = findUIDItemInArr(deletePrintUID, printArr);
+    printArr.splice(i, 1);
 }
 
-function DBDeleteFilamentData(uid){
-    //delete
+function DBDeleteFilamentData(deleteFilamentUID){
+    firebase.database().ref("users/").child(deleteFilamentUID).remove();
 
-    //save
-    //reload
+    let i = findUIDItemInArr(deleteFilamentUID, filamentArr);
+    filamentArr.splice(i, 1);
 }
 
 
 
 //CREATE ELEMENT FUNCTIONS
 function createUserElement(createUserData){
+    //fetch and initialize all data FIRST
 
+    //remove placeholder, try/catch
+    //add li element
 }
 
 function createPrintElement(createPrintData){
+    //fetch and initialize all data FIRST
 
+    //remove placeholder, try/catch
+    //add li element
 }
 
 function createFilamentElement(createFilamentData){
+    //fetch and initialize all data FIRST
 
+    //remove placeholder, try/catch
+    //add li element
 }
 
 
@@ -1153,21 +1139,15 @@ function updateFilamentElement(updateFilamentData){
 
 //DELETE ELEMENT FUNCTIONS
 function deleteUserElement(deleteUserUID){
-    //remove element with deleteUserUID
-
-    DBDeleteUserData(deleteUserUID);
+    document.getElementById(deleteUserUID).remove();
 }
 
 function deletePrintElement(deletePrintUID){
-    //remove element with deletePrintUID
-
-    DBDeletePrintData(deletePrintUID);
+    document.getElementById(deletePrintUID).remove();
 }
 
 function deleteFilamentElement(deleteFilamentUID){
-    //remove element with deleteFilamentUID
-
-    DBDeleteFilamentData(deleteFilamentUID);
+    document.getElementById(deleteFilamentUID).remove();
 }
 
 
@@ -1228,7 +1208,7 @@ function initializeHomePage(){
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
     printListContainer = document.getElementById("printListContainer");
-    printPlaceholder = document.getElementById("PrintPlaceholder");
+    elementPlaceholder = document.getElementById("PrintPlaceholder");
     upgradeUserBtn = document.getElementById("upgradeUser");
     addPrintBtn = document.getElementById("addPrint");
     printDeleteBtn = document.getElementById("printDelete");
@@ -1252,7 +1232,7 @@ function initializeHomePage(){
     editPrintInfo = document.getElementById("printEditInfo");
     editPrintUpdateBtn = document.getElementById("printEditUpdate");
     editPrintCancelBtn = document.getElementById("printEditCancel");
-    homeVarArr = [printListContainer, printPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
+    homeVarArr = [printListContainer, elementPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
         editPrintTitle, editPrintFilament, editPrintFilamentContent, editPrintFilamentPlaceholder,
         editPrintSize, editPrintSizeS, editPrintSizeN, editPrintSizeL, editPrintInfill, editPrintInfillNormal,
         editPrintInfillL, editPrintInfillXL, editPrintInfillXXL, editPrintInfillXXXL, editPrintTime,
@@ -1299,7 +1279,7 @@ function initializeAdminPage(){
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
     userListContainer = document.getElementById("userListContainer");
-    userListPlaceholder = document.getElementById("UserPlaceholder");
+    elementPlaceholder = document.getElementById("UserPlaceholder");
     userModal = document.getElementById("userModal");
     userTitle = document.getElementById("userTitle");
     userUID = document.getElementById("userUID");
@@ -1333,7 +1313,7 @@ function initializeAdminPage(){
     printStatusNew = document.getElementById("printStatusNew");
     printCreationDate = document.getElementById("printCreationDate");
     printCancelBtn = document.getElementById("printCancel");
-    adminVarArr = [userListContainer, userListPlaceholder, userModal, userTitle, userUID, userName,
+    adminVarArr = [userListContainer, elementPlaceholder, userModal, userTitle, userUID, userName,
         userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
         userDeleteBtn, guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
         guestShowPrintsBtn, guestDeleteBtn, printListModal, printListModalTitle, printListModalContainer,
@@ -1353,7 +1333,7 @@ function initializeFilamentPage(){
     signOutNavBtn = document.getElementById("signOutNavBtn");
     //Page Specific
     filamentListContainer = document.getElementById("filamentListContainer");
-    filamentPlaceholder = document.getElementById("FilamentPlaceholder");
+    elementPlaceholder = document.getElementById("FilamentPlaceholder");
     addFilamentBtn = document.getElementById("addFilament");
     filamentModal = document.getElementById("filamentModal");
     filamentTitle = document.getElementById("filamentTitle");
@@ -1391,7 +1371,7 @@ function initializeFilamentPage(){
     filamentEditInfo = document.getElementById("filamentEditInfo");
     filamentEditUpdate = document.getElementById("filamentEditUpdate");
     filamentEditCancel = document.getElementById("filamentEditCancel");
-    filamentVarArr = [filamentListContainer, filamentPlaceholder, addFilamentBtn, filamentModal, filamentTitle,
+    filamentVarArr = [filamentListContainer, elementPlaceholder, addFilamentBtn, filamentModal, filamentTitle,
         filamentType, filamentWeight, filamentThickness, filamentCostPerRoll, filamentCostPerGram,
         filamentUserCount, filamentUpdateBtn, filamentDeleteBtn, editFilamentModal, editFilamentTitle,
         filamentEditTitle, filamentEditFilament, filamentEditFilamentContent, filamentTypePlaceholder,
