@@ -113,12 +113,16 @@ let filamentsNavBtn;
 let settingsNavBtn;
 let signOutNavBtn;
 let elementPlaceholder;
+let dataElementContainer;
 let configObj = {};
 let listeningFirebaseRefs = [];
 let allUserDBRef;
 let currentUserDBRef;
 let printDBRef;
 let filamentDBRef;
+let userElementCount = 0;
+let printElementCount = 0;
+let filamentElementCount = 0;
 let user = null;
 let print = null;
 let filament = null;
@@ -151,7 +155,6 @@ let guestLoginContinue;
 let guestLoginCancel;
 
 //HOME VARS
-let printListContainer;
 let upgradeUserBtn;
 let addPrintBtn;
 let printDeleteBtn;
@@ -187,7 +190,6 @@ let adminViewUsersBtn;
 let settingsVarArr;
 
 //ADMIN VARS
-let userListContainer;
 let userModal;
 let userTitle;
 let userUID;
@@ -224,7 +226,6 @@ let printCancelBtn;
 let adminVarArr;
 
 //FILAMENT VARS
-let filamentListContainer;
 let addFilamentBtn;
 let filamentModal;
 let filamentTitle;
@@ -487,6 +488,16 @@ function initializeNavBtns(){
     signOutNavBtn.onclick = function() {
         navigation(3);
     };
+}
+
+function createElementPlaceholder(dataElementType) {
+    let liItem = document.createElement("LI");
+    let textNode = document.createTextNode("");
+
+    liItem.id = "dataElement";
+    liItem.className = dataElementType + "Placeholder";
+    liItem.appendChild(textNode);
+    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
 }
 
 
@@ -1100,39 +1111,111 @@ function DBDeleteFilamentData(deleteFilamentUID){
 
 //CREATE ELEMENT FUNCTIONS
 function createUserElement(createUserData){
-    //fetch and initialize all data FIRST
+    let liItem = document.createElement("LI");
+    let textNode;
 
-    //remove placeholder, try/catch
-    //add li element
+    liItem.id = createUserData.uid;
+    liItem.className = "dataElement";
+    liItem.onclick = function (){
+        //Nothing yet...
+    };
+
+    try{
+        elementPlaceholder.remove();
+    } catch (err) {}
+
+    if (createUserData.name == null)
+        textNode = document.createTextNode(createUserData.userName);
+    else
+        textNode = document.createTextNode(createUserData.name);
+    liItem.appendChild(textNode);
+    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
+    userElementCount++;
 }
 
 function createPrintElement(createPrintData){
-    //fetch and initialize all data FIRST
+    let liItem = document.createElement("LI");
+    let textNode;
 
-    //remove placeholder, try/catch
-    //add li element
+    liItem.id = createPrintData.uid;
+    liItem.className = "dataElement";
+    liItem.onclick = function (){
+        //Nothing yet...
+    };
+
+    try{
+        elementPlaceholder.remove();
+    } catch (err) {}
+
+    if (createPrintData.name == null)
+        textNode = document.createTextNode(createPrintData.userName);
+    else
+        textNode = document.createTextNode(createPrintData.name);
+    liItem.appendChild(textNode);
+    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
+    userElementCount++;
 }
 
 function createFilamentElement(createFilamentData){
-    //fetch and initialize all data FIRST
+    let liItem = document.createElement("LI");
+    let textNode;
 
-    //remove placeholder, try/catch
-    //add li element
+    liItem.id = createFilamentData.uid;
+    liItem.className = "dataElement";
+    liItem.onclick = function (){
+        //Nothing yet...
+    };
+
+    try{
+        elementPlaceholder.remove();
+    } catch (err) {}
+
+    if (createFilamentData.name == null)
+        textNode = document.createTextNode(createFilamentData.userName);
+    else
+        textNode = document.createTextNode(createFilamentData.name);
+    liItem.appendChild(textNode);
+    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
+    userElementCount++;
 }
 
 
 
 //UPDATE ELEMENT FUNCTIONS
 function updateUserElement(updateUserData){
-
+    let editData = document.getElementById(updateUserData.uid);
+    if (updateUserData.name == null)
+        editData.innerHTML = updateUserData.userName;
+    else
+        editData.innerHTML = updateUserData.name;
+    editData.className = "dataElement";
+    editData.onclick = function() {
+        //Nothing yet...
+    };
 }
 
 function updatePrintElement(updatePrintData){
-
+    let editData = document.getElementById(updatePrintData.uid);
+    if (updatePrintData.name == null)
+        editData.innerHTML = updatePrintData.userName;
+    else
+        editData.innerHTML = updatePrintData.name;
+    editData.className = "dataElement";
+    editData.onclick = function() {
+        //Nothing yet...
+    };
 }
 
 function updateFilamentElement(updateFilamentData){
-
+    let editData = document.getElementById(updateFilamentData.uid);
+    if (updateFilamentData.name == null)
+        editData.innerHTML = updateFilamentData.userName;
+    else
+        editData.innerHTML = updateFilamentData.name;
+    editData.className = "dataElement";
+    editData.onclick = function() {
+        //Nothing yet...
+    };
 }
 
 
@@ -1140,14 +1223,26 @@ function updateFilamentElement(updateFilamentData){
 //DELETE ELEMENT FUNCTIONS
 function deleteUserElement(deleteUserUID){
     document.getElementById(deleteUserUID).remove();
+    userElementCount--;
+
+    if (userElementCount == 0)
+        createElementPlaceholder("User");
 }
 
 function deletePrintElement(deletePrintUID){
     document.getElementById(deletePrintUID).remove();
+    printElementCount--;
+
+    if (printElementCount == 0)
+        createElementPlaceholder("Print");
 }
 
 function deleteFilamentElement(deleteFilamentUID){
     document.getElementById(deleteFilamentUID).remove();
+    filamentElementCount--;
+
+    if (filamentElementCount == 0)
+        createElementPlaceholder("Filament");
 }
 
 
@@ -1207,7 +1302,7 @@ function initializeHomePage(){
     printStatus = document.getElementById("printStatus");
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
-    printListContainer = document.getElementById("printListContainer");
+    dataElementContainer = document.getElementById("printListContainer");
     elementPlaceholder = document.getElementById("PrintPlaceholder");
     upgradeUserBtn = document.getElementById("upgradeUser");
     addPrintBtn = document.getElementById("addPrint");
@@ -1232,7 +1327,7 @@ function initializeHomePage(){
     editPrintInfo = document.getElementById("printEditInfo");
     editPrintUpdateBtn = document.getElementById("printEditUpdate");
     editPrintCancelBtn = document.getElementById("printEditCancel");
-    homeVarArr = [printListContainer, elementPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
+    homeVarArr = [dataElementContainer, elementPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
         editPrintTitle, editPrintFilament, editPrintFilamentContent, editPrintFilamentPlaceholder,
         editPrintSize, editPrintSizeS, editPrintSizeN, editPrintSizeL, editPrintInfill, editPrintInfillNormal,
         editPrintInfillL, editPrintInfillXL, editPrintInfillXXL, editPrintInfillXXXL, editPrintTime,
@@ -1278,7 +1373,7 @@ function initializeAdminPage(){
     printStatus = document.getElementById("printStatus");
     printUpdateBtn = document.getElementById("printUpdate");
     //Page Specific
-    userListContainer = document.getElementById("userListContainer");
+    dataElementContainer = document.getElementById("userListContainer");
     elementPlaceholder = document.getElementById("UserPlaceholder");
     userModal = document.getElementById("userModal");
     userTitle = document.getElementById("userTitle");
@@ -1313,7 +1408,7 @@ function initializeAdminPage(){
     printStatusNew = document.getElementById("printStatusNew");
     printCreationDate = document.getElementById("printCreationDate");
     printCancelBtn = document.getElementById("printCancel");
-    adminVarArr = [userListContainer, elementPlaceholder, userModal, userTitle, userUID, userName,
+    adminVarArr = [dataElementContainer, elementPlaceholder, userModal, userTitle, userUID, userName,
         userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
         userDeleteBtn, guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
         guestShowPrintsBtn, guestDeleteBtn, printListModal, printListModalTitle, printListModalContainer,
@@ -1332,7 +1427,7 @@ function initializeFilamentPage(){
     settingsNavBtn = document.getElementById("settingsNavBtn");
     signOutNavBtn = document.getElementById("signOutNavBtn");
     //Page Specific
-    filamentListContainer = document.getElementById("filamentListContainer");
+    dataElementContainer = document.getElementById("filamentListContainer");
     elementPlaceholder = document.getElementById("FilamentPlaceholder");
     addFilamentBtn = document.getElementById("addFilament");
     filamentModal = document.getElementById("filamentModal");
@@ -1371,7 +1466,7 @@ function initializeFilamentPage(){
     filamentEditInfo = document.getElementById("filamentEditInfo");
     filamentEditUpdate = document.getElementById("filamentEditUpdate");
     filamentEditCancel = document.getElementById("filamentEditCancel");
-    filamentVarArr = [filamentListContainer, elementPlaceholder, addFilamentBtn, filamentModal, filamentTitle,
+    filamentVarArr = [dataElementContainer, elementPlaceholder, addFilamentBtn, filamentModal, filamentTitle,
         filamentType, filamentWeight, filamentThickness, filamentCostPerRoll, filamentCostPerGram,
         filamentUserCount, filamentUpdateBtn, filamentDeleteBtn, editFilamentModal, editFilamentTitle,
         filamentEditTitle, filamentEditFilament, filamentEditFilamentContent, filamentTypePlaceholder,
