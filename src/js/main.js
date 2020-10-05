@@ -305,6 +305,9 @@ window.onload = function() {
             DBFetchFilamentData();
 
             initializeNavBtns();
+
+            if (printArr.length == 0)
+                createElementPlaceholder("Print");
         }
     }
     findPageElement = document.getElementById("settingsTitleID");
@@ -347,6 +350,9 @@ window.onload = function() {
             DBFetchFilamentData();
 
             initializeNavBtns();
+
+            if (userArr.length == 0)
+                createElementPlaceholder("User");
         }
     }
     findPageElement = document.getElementById("filamentTitleID");
@@ -368,6 +374,9 @@ window.onload = function() {
             DBFetchFilamentData();
 
             initializeNavBtns();
+
+            if (filamentArr.length == 0)
+                createElementPlaceholder("Filament");
         }
     }
 
@@ -492,12 +501,15 @@ function initializeNavBtns(){
 
 function createElementPlaceholder(dataElementType) {
     let liItem = document.createElement("LI");
-    let textNode = document.createTextNode("");
+    let textNode = document.createTextNode("There Are No " + dataElementType + "s!");
 
     liItem.id = "dataElement";
     liItem.className = dataElementType + "Placeholder";
     liItem.appendChild(textNode);
-    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
+    if (liItem.innerHTML == null)
+        dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
+    else
+        liItem.innerHTML = "There Are No " + dataElementType + "s!";
 }
 
 
@@ -1016,6 +1028,13 @@ function loadConfig(){
 
 function loadCurrentUser(){
     user = JSON.parse(sessionStorage.user);
+
+    if (user.admin == 1) {
+        filamentsNavBtn.style.display = "block";
+        try {
+            adminViewUsersBtn.style.display = "block";
+        } catch (err) {}
+    }
 }
 
 function loadAllUsers(){
