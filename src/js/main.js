@@ -518,7 +518,7 @@ function tallyUserBill(tallyUserData) {
     let totalBill = 0;
 
     for (let i = 0; i < tallyPrintArr.length; i++)
-        totalBill =+ tallyPrintArr[i].price;
+        totalBill += tallyPrintArr[i].price;
 
     return totalBill;
 }
@@ -916,10 +916,26 @@ function addNewUserToDB(userData, guestBool){
 
 //ADMIN FUNCTIONS
 function generatePrintModal(printModalUserData) {
-    //cross reference user's print list with printArr
-    //create print elements as they are found
+    if(printModalUserData.prints != null)
+        for(let a = 0; a < printArr.length; a++)
+            for(let b = 0; b < printModalUserData.prints.length; b++)
+                if (printArr[a].uid == printModalUserData[b])
+                    createPrintElement(printArr[a], printListModalContainer, printListModalPlaceholder);
+                else
+                    printListModalPlaceholder.innerHTML = "This User Does Not Have Any Prints!";
 
-    printModal.style.display = "block";
+    printListModalTitle.innerHTML = printModalUserData.userName + "\'s Prints";
+    printListModal.style.display = "block";
+
+    closePrintListModal.onclick = function() {
+        printListModal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == printListModal) {
+            printListModal.style.display = "none";
+        }
+    };
 }
 
 
@@ -1211,8 +1227,12 @@ function createUserElement(createUserData){
                 userAdminStatus.innerHTML = "User Is Now An Admin!";
                 createUserData.admin = 1;
             } else {
-                userAdminStatus.innerHTML = "User Is No Longer An Admin!";
-                createUserData.admin = 0;
+                if (createUserData.uid == user.uid)
+                    userAdminStatus.innerHTML = "You Cannot Revoke Your Own Access!";
+                else {
+                    userAdminStatus.innerHTML = "User Is No Longer An Admin!";
+                    createUserData.admin = 0;
+                }
             }
             DBUpdateUserData(createUserData);
         };
@@ -1248,7 +1268,7 @@ function createUserElement(createUserData){
     userElementCount++;
 }
 
-function createPrintElement(createPrintData){
+function createPrintElement(createPrintData, dataContainerType, dataPlaceholderType){
     let liItem = document.createElement("LI");
     let textNode;
 
@@ -1259,16 +1279,13 @@ function createPrintElement(createPrintData){
     };
 
     try{
-        elementPlaceholder.remove();
+        dataPlaceholderType.remove();
     } catch (err) {}
 
-    if (createPrintData.name == null)
-        textNode = document.createTextNode(createPrintData.userName);
-    else
-        textNode = document.createTextNode(createPrintData.name);
+    textNode = document.createTextNode(createPrintData.title);
     liItem.appendChild(textNode);
-    dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
-    userElementCount++;
+    dataContainerType.insertBefore(liItem, dataContainerType.childNodes[0]);
+    printElementCount++;
 }
 
 function createFilamentElement(createFilamentData){
@@ -1285,13 +1302,10 @@ function createFilamentElement(createFilamentData){
         elementPlaceholder.remove();
     } catch (err) {}
 
-    if (createFilamentData.name == null)
-        textNode = document.createTextNode(createFilamentData.userName);
-    else
-        textNode = document.createTextNode(createFilamentData.name);
+    textNode = document.createTextNode(createFilamentData.title);
     liItem.appendChild(textNode);
     dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
-    userElementCount++;
+    filamentElementCount++;
 }
 
 
@@ -1299,22 +1313,83 @@ function createFilamentElement(createFilamentData){
 //UPDATE ELEMENT FUNCTIONS
 function updateUserElement(updateUserData){
     let editData = document.getElementById(updateUserData.uid);
+
+    if (updateUserData.uid == currentModalOpen) {
+        userModal.style.display = "none";
+        alert("This User's Data Was Updated. Please Reopen It To See Updates.")
+    }
     if (updateUserData.name == null)
         editData.innerHTML = updateUserData.userName;
     else
         editData.innerHTML = updateUserData.name;
     editData.className = "dataElement";
     editData.onclick = function() {
-        //Nothing yet...
+        userUID.innerHTML = updateUserData.uid;
+        if (updateUserData.name != null)
+            userName.innerHTML = updateUserData.name;
+        else
+            userName.innerHTML = "No Name Provided";
+        userUserName.innerHTML = updateUserData.userName;
+        userPassword.innerHTML = "Click On Me To View Password!";
+        userPrints.innerHTML = updateUserData.prints.length;
+        userBill.innerHTML = tallyUserBill(updateUserData);
+        userFilament.innerHTML = tallyUserFilament(updateUserData);
+        if (updateUserData.admin == 0)
+            userAdminStatus.innerHTML = "Click On Me To Grant Admin Access!";
+        else
+            userAdminStatus.innerHTML = "Click On Me To Revoke Admin Access!";
+        userShowPrintsBtn.innerHTML = "Show User's Prints";
+        userDeleteBtn.innerHTML = "Delete User";
+
+        userDeleteBtn.onclick = function() {
+            DBDeleteUserData(updateUserData.uid);
+            deleteUserElement(updateUserData.uid);
+            userModal.style.display = "none";
+        };
+
+        userShowPrintsBtn.onclick = function() {
+            generatePrintModal(updateUserData);
+            userModal.style.display = "none";
+        };
+
+        userAdminStatus.onclick = function() {
+            if (updateUserData.admin == 0) {
+                userAdminStatus.innerHTML = "User Is Now An Admin!";
+                updateUserData.admin = 1;
+            } else {
+                if (updateUserData.uid == user.uid)
+                    userAdminStatus.innerHTML = "You Cannot Revoke Your Own Access!";
+                else {
+                    userAdminStatus.innerHTML = "User Is No Longer An Admin!";
+                    updateUserData.admin = 0;
+                }
+            }
+            DBUpdateUserData(updateUserData);
+        };
+
+        userPassword.onclick = function() {
+            userPassword.innerHTML = decode(updateUserData.pin);
+        };
+
+        closeUserModal.onclick = function() {
+            userModal.style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == userModal) {
+                userModal.style.display = "none";
+            }
+        };
+
+        currentModalOpen = updateUserData.uid;
+        userModal.style.display = "block";
     };
 }
 
-function updatePrintElement(updatePrintData){
+function updatePrintElement(updatePrintData, dataContainerType){
     let editData = document.getElementById(updatePrintData.uid);
-    if (updatePrintData.name == null)
-        editData.innerHTML = updatePrintData.userName;
-    else
-        editData.innerHTML = updatePrintData.name;
+
+    editData.innerHTML = updatePrintData.title;
     editData.className = "dataElement";
     editData.onclick = function() {
         //Nothing yet...
@@ -1323,10 +1398,8 @@ function updatePrintElement(updatePrintData){
 
 function updateFilamentElement(updateFilamentData){
     let editData = document.getElementById(updateFilamentData.uid);
-    if (updateFilamentData.name == null)
-        editData.innerHTML = updateFilamentData.userName;
-    else
-        editData.innerHTML = updateFilamentData.name;
+
+    editData.innerHTML = updateFilamentData.title;
     editData.className = "dataElement";
     editData.onclick = function() {
         //Nothing yet...
