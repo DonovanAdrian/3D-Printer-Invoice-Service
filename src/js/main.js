@@ -22,6 +22,9 @@
  *   - initializeDatabase()
  *   - findUIDItemInArr()
  *   - initializeNavBtns()
+ *   - createElementPlaceholder(dataElementType)
+ *   - tallyUserBill(user)
+ *   - tallyUserFilament(user)
  *
  * LOGIN FUNCTIONS
  *   - initializeLoginFunctionality()
@@ -41,6 +44,7 @@
  * SETTINGS FUNCTIONS
  *
  * ADMIN FUNCTIONS
+ *   - generatePrintModal(user)
  *
  * FILAMENT FUNCTIONS
  *
@@ -57,7 +61,7 @@
  *   - loadFilamentData()
  *
  * UPDATE DATA FUNCTIONS
- *   - DBUpdateCurrentUser(user)
+ *   - DBUpdateUserData(user)
  *   - DBUpdatePrintData(print)
  *   - DBUpdateFilamentData(filament)
  *
@@ -100,6 +104,7 @@
 let offlineModal;
 let offlineModalSpan;
 let printModal;
+let closePrintModal;
 let printTitle;
 let printFilament;
 let printTime;
@@ -123,6 +128,7 @@ let filamentDBRef;
 let userElementCount = 0;
 let printElementCount = 0;
 let filamentElementCount = 0;
+let currentModalOpen = "";
 let user = null;
 let print = null;
 let filament = null;
@@ -159,6 +165,7 @@ let upgradeUserBtn;
 let addPrintBtn;
 let printDeleteBtn;
 let editPrintModal;
+let closeEditPrintModal;
 let editPrintTitle;
 let editPrintFilament;
 let editPrintFilamentContent;
@@ -191,6 +198,7 @@ let settingsVarArr;
 
 //ADMIN VARS
 let userModal;
+let closeUserModal;
 let userTitle;
 let userUID;
 let userName;
@@ -202,17 +210,8 @@ let userFilament;
 let userAdminStatus;
 let userShowPrintsBtn;
 let userDeleteBtn;
-let guestModal;
-let guestTitle;
-let guestUID;
-let guestName;
-let guestPin;
-let guestPrints;
-let guestBill;
-let guestFilament;
-let guestShowPrintsBtn;
-let guestDeleteBtn;
 let printListModal;
+let closePrintListModal;
 let printListModalTitle;
 let printListModalContainer;
 let printListModalPlaceholder;
@@ -228,6 +227,7 @@ let adminVarArr;
 //FILAMENT VARS
 let addFilamentBtn;
 let filamentModal;
+let closeFilamentModal;
 let filamentTitle;
 let filamentType;
 let filamentWeight;
@@ -238,6 +238,7 @@ let filamentUserCount;
 let filamentUpdateBtn;
 let filamentDeleteBtn;
 let editFilamentModal;
+let closeEditFilamentModal;
 let editFilamentTitle;
 let filamentEditTitle;
 let filamentEditFilament;
@@ -296,7 +297,7 @@ window.onload = function() {
             initializeDatabase();
 
             loadCurrentUser();
-            DBUpdateCurrentUser();
+            DBFetchCurrentUser();
 
             loadPrintData();
             DBFetchPrintData();
@@ -323,7 +324,7 @@ window.onload = function() {
             initializeDatabase();
 
             loadCurrentUser();
-            DBUpdateCurrentUser();
+            DBFetchCurrentUser();
 
             initializeNavBtns();
         }
@@ -510,6 +511,41 @@ function createElementPlaceholder(dataElementType) {
         dataElementContainer.insertBefore(liItem, dataElementContainer.childNodes[0]);
     else
         liItem.innerHTML = "There Are No " + dataElementType + "s!";
+}
+
+function tallyUserBill(tallyUserData) {
+    let tallyPrintArr = tallyUserData.prints;
+    let totalBill = 0;
+
+    for (let i = 0; i < tallyPrintArr.length; i++)
+        totalBill =+ tallyPrintArr[i].price;
+
+    return totalBill;
+}
+
+function tallyUserFilament(tallyUserData) {
+    let tallyPrintArr = tallyUserData.prints;
+    let tallyFilamentArr = [];
+    let tallyFilamentCount = [];
+    let largestFilamentCount = 0;
+    let favoriteFilament = 0;
+
+    for (let i = 0; i < tallyPrintArr.length; i++)
+        if (!tallyFilamentArr.contains(tallyPrintArr[i])) {
+            tallyFilamentArr.push(tallyPrintArr[i]);
+            tallyFilamentCount.push(1);
+        } else {
+            let a = findUIDItemInArr(tallyPrintArr[i].uid, tallyFilamentArr);
+            tallyFilamentCount[a] = tallyFilamentCount[a]++;
+        }
+
+    for (let i = 0; i < tallyFilamentCount.length; i++)
+        if (largestFilamentCount > tallyFilamentCount[i]) {
+            largestFilamentCount = tallyFilamentCount[i];
+            favoriteFilament = i;
+        }
+
+    return tallyFilamentArr[favoriteFilament];
 }
 
 
@@ -879,7 +915,12 @@ function addNewUserToDB(userData, guestBool){
 
 
 //ADMIN FUNCTIONS
-//admin fxns here
+function generatePrintModal(printModalUserData) {
+    //cross reference user's print list with printArr
+    //create print elements as they are found
+
+    printModal.style.display = "block";
+}
 
 
 
@@ -1052,8 +1093,9 @@ function loadFilamentData(){
 
 
 //UPDATE DATA FUNCTIONS
-function DBUpdateCurrentUser(DBUserData){
-    user = DBUserData;
+function DBUpdateUserData(DBUserData){
+    if (DBUserData.uid = user.uid)
+        user = DBUserData;
 
     firebase.database().ref("users/" + DBUserData.uid).update({
         uid: DBUserData.uid,
@@ -1136,7 +1178,61 @@ function createUserElement(createUserData){
     liItem.id = createUserData.uid;
     liItem.className = "dataElement";
     liItem.onclick = function (){
-        //Nothing yet...
+        userUID.innerHTML = createUserData.uid;
+        if (createUserData.name != null)
+            userName.innerHTML = createUserData.name;
+        else
+            userName.innerHTML = "No Name Provided";
+        userUserName.innerHTML = createUserData.userName;
+        userPassword.innerHTML = "Click On Me To View Password!";
+        userPrints.innerHTML = createUserData.prints.length;
+        userBill.innerHTML = tallyUserBill(createUserData);
+        userFilament.innerHTML = tallyUserFilament(createUserData);
+        if (createUserData.admin == 0)
+            userAdminStatus.innerHTML = "Click On Me To Grant Admin Access!";
+        else
+            userAdminStatus.innerHTML = "Click On Me To Revoke Admin Access!";
+        userShowPrintsBtn.innerHTML = "Show User's Prints";
+        userDeleteBtn.innerHTML = "Delete User";
+
+        userDeleteBtn.onclick = function() {
+            DBDeleteUserData(createUserData.uid);
+            deleteUserElement(createUserData.uid);
+            userModal.style.display = "none";
+        };
+
+        userShowPrintsBtn.onclick = function() {
+            generatePrintModal(createUserData);
+            userModal.style.display = "none";
+        };
+
+        userAdminStatus.onclick = function() {
+            if (createUserData.admin == 0) {
+                userAdminStatus.innerHTML = "User Is Now An Admin!";
+                createUserData.admin = 1;
+            } else {
+                userAdminStatus.innerHTML = "User Is No Longer An Admin!";
+                createUserData.admin = 0;
+            }
+            DBUpdateUserData(createUserData);
+        };
+
+        userPassword.onclick = function() {
+            userPassword.innerHTML = decode(createUserData.pin);
+        };
+
+        closeUserModal.onclick = function() {
+            userModal.style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == userModal) {
+                userModal.style.display = "none";
+            }
+        };
+
+        currentModalOpen = createUserData.uid;
+        userModal.style.display = "block";
     };
 
     try{
@@ -1312,6 +1408,7 @@ function initializeHomePage(){
     settingsNavBtn = document.getElementById("settingsNavBtn");
     signOutNavBtn = document.getElementById("signOutNavBtn");
     printModal = document.getElementById("printModal");
+    closePrintModal = document.getElementById("closePrintModal");
     printTitle = document.getElementById("printTitle");
     printFilament = document.getElementById("printFilament");
     printTime = document.getElementById("printTime");
@@ -1327,6 +1424,7 @@ function initializeHomePage(){
     addPrintBtn = document.getElementById("addPrint");
     printDeleteBtn = document.getElementById("printDelete");
     editPrintModal = document.getElementById("editPrintModal");
+    closeEditPrintModal = document.getElementById("closeEditPrintModal");
     editPrintTitle = document.getElementById("editPrintTitle");
     editPrintFilament = document.getElementById("printEditTitle");
     editPrintFilamentContent = document.getElementById("printEditFilament");
@@ -1347,12 +1445,12 @@ function initializeHomePage(){
     editPrintUpdateBtn = document.getElementById("printEditUpdate");
     editPrintCancelBtn = document.getElementById("printEditCancel");
     homeVarArr = [dataElementContainer, elementPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
-        editPrintTitle, editPrintFilament, editPrintFilamentContent, editPrintFilamentPlaceholder,
+        closeEditPrintModal, editPrintTitle, editPrintFilament, editPrintFilamentContent, editPrintFilamentPlaceholder,
         editPrintSize, editPrintSizeS, editPrintSizeN, editPrintSizeL, editPrintInfill, editPrintInfillNormal,
         editPrintInfillL, editPrintInfillXL, editPrintInfillXXL, editPrintInfillXXXL, editPrintTime,
         editPrintPrice, editPrintInfo, editPrintUpdateBtn, editPrintCancelBtn, offlineModal, offlineModalSpan,
-        printModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus,
-        printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
+        printModal, closePrintModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice,
+        printStatus, printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
 }
 
 function initializeSettingsPage(){
@@ -1383,6 +1481,7 @@ function initializeAdminPage(){
     settingsNavBtn = document.getElementById("settingsNavBtn");
     signOutNavBtn = document.getElementById("signOutNavBtn");
     printModal = document.getElementById("printModal");
+    closePrintModal = document.getElementById("closePrintModal");
     printTitle = document.getElementById("printTitle");
     printFilament = document.getElementById("printFilament");
     printTime = document.getElementById("printTime");
@@ -1395,6 +1494,7 @@ function initializeAdminPage(){
     dataElementContainer = document.getElementById("userListContainer");
     elementPlaceholder = document.getElementById("UserPlaceholder");
     userModal = document.getElementById("userModal");
+    closeUserModal = document.getElementById("closeUserModal");
     userTitle = document.getElementById("userTitle");
     userUID = document.getElementById("userUID");
     userName = document.getElementById("userName");
@@ -1406,17 +1506,8 @@ function initializeAdminPage(){
     userAdminStatus = document.getElementById("userAdminStatus");
     userShowPrintsBtn = document.getElementById("userShowPrints");
     userDeleteBtn = document.getElementById("userDelete");
-    guestModal = document.getElementById("guestModal");
-    guestTitle = document.getElementById("guestTitle");
-    guestUID = document.getElementById("guestUID");
-    guestName = document.getElementById("guestName");
-    guestPin = document.getElementById("guestPin");
-    guestPrints = document.getElementById("guestPrints");
-    guestBill = document.getElementById("guestBill");
-    guestFilament = document.getElementById("guestFilament");
-    guestShowPrintsBtn = document.getElementById("guestShowPrints");
-    guestDeleteBtn = document.getElementById("guestDelete");
     printListModal = document.getElementById("printListModal");
+    closePrintListModal = document.getElementById("closePrintListModal");
     printListModalTitle = document.getElementById("printListTitle");
     printListModalContainer = document.getElementById("printListContainer");
     printListModalPlaceholder = document.getElementById("PrintPlaceholder");
@@ -1427,14 +1518,13 @@ function initializeAdminPage(){
     printStatusNew = document.getElementById("printStatusNew");
     printCreationDate = document.getElementById("printCreationDate");
     printCancelBtn = document.getElementById("printCancel");
-    adminVarArr = [dataElementContainer, elementPlaceholder, userModal, userTitle, userUID, userName,
+    adminVarArr = [dataElementContainer, elementPlaceholder, userModal, closeUserModal, userTitle, userUID, userName,
         userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
-        userDeleteBtn, guestModal, guestTitle, guestUID, guestName, guestPin, guestPrints, guestBill, guestFilament,
-        guestShowPrintsBtn, guestDeleteBtn, printListModal, printListModalTitle, printListModalContainer,
-        printListModalPlaceholder, printStatusOrdered, printStatusPrinting, printStatusComplete,
-        printStatusOther, printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan,
-        printModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus,
-        printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
+        userDeleteBtn, printListModal, closePrintListModal, printListModalTitle, printListModalContainer,
+        printListModalPlaceholder, printStatusOrdered, printStatusPrinting, printStatusComplete, printStatusOther,
+        printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan, printModal, closePrintModal,
+        printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus, printUpdateBtn,
+        homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
 }
 
 function initializeFilamentPage(){
@@ -1450,6 +1540,7 @@ function initializeFilamentPage(){
     elementPlaceholder = document.getElementById("FilamentPlaceholder");
     addFilamentBtn = document.getElementById("addFilament");
     filamentModal = document.getElementById("filamentModal");
+    closeFilamentModal = document.getElementById("closeFilamentModal");
     filamentTitle = document.getElementById("filamentTitle");
     filamentType = document.getElementById("filamentType");
     filamentWeight = document.getElementById("filamentWeight");
@@ -1460,6 +1551,7 @@ function initializeFilamentPage(){
     filamentUpdateBtn = document.getElementById("filamentUpdate");
     filamentDeleteBtn = document.getElementById("filamentDelete");
     editFilamentModal = document.getElementById("editFilamentModal");
+    closeEditFilamentModal = document.getElementById("closeEditFilamentModal");
     editFilamentTitle = document.getElementById("editFilamentTitle");
     filamentEditTitle = document.getElementById("filamentEditTitle");
     filamentEditFilament = document.getElementById("filamentEditFilament");
@@ -1487,11 +1579,11 @@ function initializeFilamentPage(){
     filamentEditCancel = document.getElementById("filamentEditCancel");
     filamentVarArr = [dataElementContainer, elementPlaceholder, addFilamentBtn, filamentModal, filamentTitle,
         filamentType, filamentWeight, filamentThickness, filamentCostPerRoll, filamentCostPerGram,
-        filamentUserCount, filamentUpdateBtn, filamentDeleteBtn, editFilamentModal, editFilamentTitle,
-        filamentEditTitle, filamentEditFilament, filamentEditFilamentContent, filamentTypePlaceholder,
-        filamentEditFilamentNew, filamentEditWeight, filamentWeightXS, filamentWeightS, filamentWeightM,
-        filamentWeightXL, filamentWeightOther, filamentEditWeightNew, filamentEditThickness, filamentThicknessS,
-        filamentThicknessM, filamentThicknessL, filamentThicknessOther, filamentEditThicknessNew,
+        filamentUserCount, filamentUpdateBtn, filamentDeleteBtn, editFilamentModal, closeEditFilamentModal,
+        editFilamentTitle, filamentEditTitle, filamentEditFilament, filamentEditFilamentContent,
+        filamentTypePlaceholder, filamentEditFilamentNew, filamentEditWeight, filamentWeightXS, filamentWeightS,
+        filamentWeightM, filamentWeightXL, filamentWeightOther, filamentEditWeightNew, filamentEditThickness,
+        filamentThicknessS, filamentThicknessM, filamentThicknessL, filamentThicknessOther, filamentEditThicknessNew,
         filamentEditCostPerRoll, filamentEditCostPerGram, filamentEditUserCount, filamentEditInfo, filamentEditUpdate,
         filamentEditCancel, offlineModal, offlineModalSpan, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
 }
@@ -1502,7 +1594,6 @@ function verifyVariableIntegrity(variableArr){
     for(let i = 0; i < variableArr.length; i++){
         try{
             if (variableArr[i] != null) {
-                //console.log("Variable Valid.");
                 variableArr[i].innerHTML;
             } else {
                 console.log("Variable #" + i + ": " + variableArr[i] + " Is Null.");
