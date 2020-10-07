@@ -8,6 +8,11 @@
 - [x] Add Input Modals To Pages
 - [ ] Add JavaScript
   - [ ] main.js
+    - [x] index functions
+    - [ ] home functions
+    - [ ] filament functions
+    - [ ] settings functions
+    - [x] admin functions
   - [x] passOp.js
 - [x] Add CSS
 - [x] Add Example Config
