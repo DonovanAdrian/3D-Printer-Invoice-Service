@@ -72,7 +72,7 @@
  *
  * CREATE ELEMENT FUNCTIONS
  *   - createUserElement(createUserData)
- *   - createPrintElement(createPrintData)
+ *   - createPrintElement(createPrintData, dataContainerType, dataPlaceholderType, dataModalSource)
  *   - createFilamentElement(createFilamentData)
  *
  * UPDATE ELEMENT FUNCTIONS
@@ -215,6 +215,7 @@ let closePrintListModal;
 let printListModalTitle;
 let printListModalContainer;
 let printListModalPlaceholder;
+let printStatusOptions;
 let printStatusOrdered;
 let printStatusPrinting;
 let printStatusComplete;
@@ -223,6 +224,7 @@ let printCreationDate;
 let printStatusNew;
 let printCancelBtn;
 let adminVarArr;
+let printStatusInt = 0;
 
 //FILAMENT VARS
 let addFilamentBtn;
@@ -386,6 +388,7 @@ window.onload = function() {
     } else {
         window.addEventListener("online", function(){
             offlineModal.style.display = "none";
+            currentModalOpen = "";
             location.reload();
         });
 
@@ -395,6 +398,7 @@ window.onload = function() {
                 now = now + 1000;
                 if(now >= 5000){
                     offlineModal.style.display = "block";
+                    currentModalOpen = "offlineModal";
                     clearInterval(g);
                 }
             }, 1000);
@@ -403,12 +407,14 @@ window.onload = function() {
         //close offlineModal on close
         offlineModalSpan.onclick = function() {
             offlineModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         //close offlineModal on click
         window.onclick = function(event) {
             if (event.target == offlineModal) {
                 offlineModal.style.display = "none";
+                currentModalOpen = "";
             }
         };
     }
@@ -763,20 +769,23 @@ function guestLogin() {
 
     guestLoginCancel.onclick = function() {
         guestLoginModal.style.display = "none";
+        currentModalOpen = "";
     };
 
     closeGuestLogin.onclick = function() {
         guestLoginModal.style.display = "none";
+        currentModalOpen = "";
     };
 
-    //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == guestLoginModal) {
             guestLoginModal.style.display = "none";
+            currentModalOpen = "";
         }
     };
 
     guestLoginModal.style.display = "block";
+    currentModalOpen = "guestLoginModal";
 }
 
 function signUp() {
@@ -822,20 +831,23 @@ function signUp() {
         signUpUserNameInput.value = "";
         signUpPinInput.value = "";
         signUpPinConfInput.value = "";
+        currentModalOpen = "";
     };
 
     closeSignUp.onclick = function() {
         signUpModal.style.display = "none";
+        currentModalOpen = "";
     };
 
-    //close offlineModal on click
     window.onclick = function(event) {
         if (event.target == signUpModal) {
             signUpModal.style.display = "none";
+            currentModalOpen = "";
         }
     };
 
     signUpModal.style.display = "block";
+    currentModalOpen = "signUpModal";
 }
 
 function generateNewUID() {
@@ -920,20 +932,24 @@ function generatePrintModal(printModalUserData) {
         for(let a = 0; a < printArr.length; a++)
             for(let b = 0; b < printModalUserData.prints.length; b++)
                 if (printArr[a].uid == printModalUserData[b])
-                    createPrintElement(printArr[a], printListModalContainer, printListModalPlaceholder);
+                    createPrintElement(printArr[a], printListModalContainer, printListModalPlaceholder,
+                        printListModal);
                 else
                     printListModalPlaceholder.innerHTML = "This User Does Not Have Any Prints!";
 
     printListModalTitle.innerHTML = printModalUserData.userName + "\'s Prints";
     printListModal.style.display = "block";
+    currentModalOpen = "printListModal";
 
     closePrintListModal.onclick = function() {
         printListModal.style.display = "none";
+        currentModalOpen = "";
     };
 
     window.onclick = function(event) {
         if (event.target == printListModal) {
             printListModal.style.display = "none";
+            currentModalOpen = "";
         }
     };
 }
@@ -1215,11 +1231,13 @@ function createUserElement(createUserData){
             DBDeleteUserData(createUserData.uid);
             deleteUserElement(createUserData.uid);
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         userShowPrintsBtn.onclick = function() {
             generatePrintModal(createUserData);
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         userAdminStatus.onclick = function() {
@@ -1243,16 +1261,18 @@ function createUserElement(createUserData){
 
         closeUserModal.onclick = function() {
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         window.onclick = function(event) {
             if (event.target == userModal) {
                 userModal.style.display = "none";
+                currentModalOpen = "";
             }
         };
 
-        currentModalOpen = createUserData.uid;
         userModal.style.display = "block";
+        currentModalOpen = createUserData.uid;
     };
 
     try{
@@ -1268,14 +1288,94 @@ function createUserElement(createUserData){
     userElementCount++;
 }
 
-function createPrintElement(createPrintData, dataContainerType, dataPlaceholderType){
+function createPrintElement(createPrintData, dataContainerType, dataPlaceholderType, dataModalSource){
     let liItem = document.createElement("LI");
     let textNode;
+    let otherPrintStatusBool = false;
 
     liItem.id = createPrintData.uid;
     liItem.className = "dataElement";
     liItem.onclick = function (){
-        //Nothing yet...
+        if (dataModalSource != null) {
+            dataModalSource.style.display = "none";
+            currentModalOpen = "";
+
+            printStatus.onclick = function() {
+                if (printStatusInt == 0) {
+                    printStatusOptions.style.display = "block";
+                    printStatusInt++;
+                } else {
+                    printStatusOptions.style.display = "none";
+                    printStatusInt--;
+                }
+
+                printStatusOrdered.onclick = function() {
+                    printStatusOptions.style.display = "none";
+                    printStatusNew.style.display = "none";
+                    printStatusNew.value = "";
+                    printStatus.innerHTML = "Ordered";
+                    createPrintData.status = "Ordered";
+                    otherPrintStatusBool = false;
+                };
+
+                printStatusPrinting.onclick = function() {
+                    printStatusOptions.style.display = "none";
+                    printStatusNew.style.display = "none";
+                    printStatusNew.value = "";
+                    printStatus.innerHTML = "Printing";
+                    createPrintData.status = "Printing";
+                    otherPrintStatusBool = false;
+                };
+
+                printStatusComplete.onclick = function() {
+                    printStatusOptions.style.display = "none";
+                    printStatusNew.style.display = "none";
+                    printStatusNew.value = "";
+                    printStatus.innerHTML = "Complete";
+                    createPrintData.status = "Complete";
+                    otherPrintStatusBool = false;
+                };
+
+                printStatusOther.onclick = function() {
+                    printStatusOptions.style.display = "none";
+                    printStatus.innerHTML = "Other";
+                    printStatusNew.style.display = "block";
+                    createPrintData.status = "Other";
+                    otherPrintStatusBool = true;
+                };
+            };
+
+            printUpdateBtn.onclick = function() {
+                if (otherPrintStatusBool)
+                    createPrintData.status = printStatusNew.value;
+                DBUpdatePrintData(createPrintData);
+            };
+
+            printCancelBtn.onclick = function() {
+                printStatusOptions.style.display = "none";
+                printStatusNew.style.display = "none";
+                printModal.style.display = "none";
+            };
+        } else {
+            printUpdateBtn.onclick = function() {
+                //Nothing yet...
+            };
+            printDeleteBtn.onclick = function() {
+                //Nothing yet...
+            };
+        }
+
+        printTitle.innerHTML = createPrintData.title;
+        printFilament.innerHTML = createPrintData.filament;
+        printTime.innerHTML = createPrintData.time;
+        printSize.innerHTML = createPrintData.size;
+        printInfill.innerHTML = createPrintData.infill;
+        printPrice.innerHTML = createPrintData.price;
+        printStatus.innerHTML = createPrintData.status;
+        printCreationDate.innerHTML = createPrintData.creationDate;
+
+        printModal.style.display = "block";
+        currentModalOpen = createPrintData.uid;
     };
 
     try{
@@ -1316,6 +1416,7 @@ function updateUserElement(updateUserData){
 
     if (updateUserData.uid == currentModalOpen) {
         userModal.style.display = "none";
+        currentModalOpen = "";
         alert("This User's Data Was Updated. Please Reopen It To See Updates.")
     }
     if (updateUserData.name == null)
@@ -1345,11 +1446,13 @@ function updateUserElement(updateUserData){
             DBDeleteUserData(updateUserData.uid);
             deleteUserElement(updateUserData.uid);
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         userShowPrintsBtn.onclick = function() {
             generatePrintModal(updateUserData);
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         userAdminStatus.onclick = function() {
@@ -1373,16 +1476,18 @@ function updateUserElement(updateUserData){
 
         closeUserModal.onclick = function() {
             userModal.style.display = "none";
+            currentModalOpen = "";
         };
 
         window.onclick = function(event) {
             if (event.target == userModal) {
                 userModal.style.display = "none";
+                currentModalOpen = "";
             }
         };
 
-        currentModalOpen = updateUserData.uid;
         userModal.style.display = "block";
+        currentModalOpen = updateUserData.uid;
     };
 }
 
@@ -1584,6 +1689,7 @@ function initializeAdminPage(){
     printListModalTitle = document.getElementById("printListTitle");
     printListModalContainer = document.getElementById("printListContainer");
     printListModalPlaceholder = document.getElementById("PrintPlaceholder");
+    printStatusOptions = document.getElementById("printStatusOptions");
     printStatusOrdered = document.getElementById("printStatusOrdered");
     printStatusPrinting = document.getElementById("printStatusPrinting");
     printStatusComplete = document.getElementById("printStatusComplete");
@@ -1594,10 +1700,10 @@ function initializeAdminPage(){
     adminVarArr = [dataElementContainer, elementPlaceholder, userModal, closeUserModal, userTitle, userUID, userName,
         userUserName, userPassword, userPrints, userBill, userFilament, userAdminStatus, userShowPrintsBtn,
         userDeleteBtn, printListModal, closePrintListModal, printListModalTitle, printListModalContainer,
-        printListModalPlaceholder, printStatusOrdered, printStatusPrinting, printStatusComplete, printStatusOther,
-        printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan, printModal, closePrintModal,
-        printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus, printUpdateBtn,
-        homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
+        printListModalPlaceholder, printStatusOptions, printStatusOrdered, printStatusPrinting, printStatusComplete,
+        printStatusOther, printCreationDate, printStatusNew, printCancelBtn, offlineModal, offlineModalSpan,
+        printModal, closePrintModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice,
+        printStatus, printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
 }
 
 function initializeFilamentPage(){
