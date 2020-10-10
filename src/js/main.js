@@ -40,6 +40,8 @@
  *   - addNewUserToDB()
  *
  * HOME FUNCTIONS
+ *   - generateEditPrintModal(editPrintModalUserData)
+ *   - generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget)
  *
  * SETTINGS FUNCTIONS
  *
@@ -72,7 +74,7 @@
  *
  * CREATE ELEMENT FUNCTIONS
  *   - createUserElement(createUserData)
- *   - createPrintElement(createPrintData, dataContainerType, dataPlaceholderType, dataModalSource)
+ *   - createPrintElement(createPrintData)
  *   - createFilamentElement(createFilamentData)
  *
  * UPDATE ELEMENT FUNCTIONS
@@ -167,14 +169,17 @@ let printDeleteBtn;
 let editPrintModal;
 let closeEditPrintModal;
 let editPrintTitle;
+let printEditTitle;
 let editPrintFilament;
 let editPrintFilamentContent;
 let editPrintFilamentPlaceholder;
 let editPrintSize;
+let editPrintSizeContent;
 let editPrintSizeS;
 let editPrintSizeN;
 let editPrintSizeL;
 let editPrintInfill;
+let editPrintInfillContent;
 let editPrintInfillNormal;
 let editPrintInfillL;
 let editPrintInfillXL;
@@ -186,6 +191,10 @@ let editPrintInfo;
 let editPrintUpdateBtn;
 let editPrintCancelBtn;
 let homeVarArr;
+let editPrintFilamentUID;
+let editPrintFilamentInt = 0;
+let editPrintSizeInt = 0;
+let editPrintInfillInt = 0;
 
 //SETTINGS VARS
 let editNameInput;
@@ -917,7 +926,129 @@ function addNewUserToDB(userData, guestBool){
 
 
 //HOME FUNCTIONS
-//home fxns here
+function generateEditPrintModal(editPrintModalUserData) {
+    editPrintTitle.innerHTML = editPrintModalUserData.title;
+    printEditTitle.value = editPrintModalUserData.title;
+    editPrintFilament.innerHTML = editPrintModalUserData.filament;
+    editPrintSize.innerHTML = editPrintModalUserData.size;
+    editPrintInfill.innerHTML = editPrintModalUserData.infill;
+    editPrintTime.innerHTML = editPrintModalUserData.time;
+    editPrintPrice.innerHTML = editPrintModalUserData.price;
+    editPrintInfo.innerHTML = editPrintModalUserData.status;
+
+    editPrintCancelBtn.onclick = function() {
+        editPrintModal.style.display = "none";
+    };
+
+    editPrintUpdateBtn.onclick = function() {
+        editPrintModalUserData.filament = editPrintFilamentUID;
+        DBUpdatePrintData(editPrintModalUserData);
+        editPrintModal.style.display = "none";
+    };
+
+    editPrintInfill.onclick = function() {
+        editPrintInfillNormal.onclick = function() {
+            editPrintInfill.innerHTML = "15%";
+            editPrintModalUserData.infill = "Normal";
+            editPrintInfillContent.style.display = "none";
+        };
+
+        editPrintInfillL.onclick = function() {
+            editPrintInfill.innerHTML = "35%";
+            editPrintModalUserData.infill = "Large";
+            editPrintInfillContent.style.display = "none";
+        };
+
+        editPrintInfillXL.onclick = function() {
+            editPrintInfill.innerHTML = "50%";
+            editPrintModalUserData.infill = "XL";
+            editPrintInfillContent.style.display = "none";
+        };
+
+        editPrintInfillXXL.onclick = function() {
+            editPrintInfill.innerHTML = "75%";
+            editPrintModalUserData.infill = "XXL";
+            editPrintInfillContent.style.display = "none";
+        };
+
+        editPrintInfillXXXL.onclick = function() {
+            editPrintInfill.innerHTML = "100%";
+            editPrintModalUserData.infill = "XXXL";
+            editPrintInfillContent.style.display = "none";
+        };
+
+        if (editPrintInfillInt == 0) {
+            editPrintInfillContent.style.display = "block";
+            editPrintInfillInt = 1;
+        } else {
+            editPrintInfillContent.style.display = "none";
+            editPrintInfillInt = 0;
+        }
+    };
+
+    editPrintSize.onclick = function() {
+        editPrintSizeS.onclick = function() {
+            editPrintSize.innerHTML = "Small";
+            editPrintModalUserData.size = "Small";
+            editPrintSizeContent.style.display = "none";
+        };
+
+        editPrintSizeN.onclick = function() {
+            editPrintSize.innerHTML = "Normal";
+            editPrintModalUserData.size = "Normal";
+            editPrintSizeContent.style.display = "none";
+        };
+
+        editPrintSizeL.onclick = function() {
+            editPrintSize.innerHTML = "Large";
+            editPrintModalUserData.size = "Large";
+            editPrintSizeContent.style.display = "none";
+        };
+
+        if (editPrintSizeInt == 0) {
+            editPrintSizeContent.style.display = "block";
+            editPrintSizeInt = 1;
+        } else {
+            editPrintSizeContent.style.display = "none";
+            editPrintSizeInt = 0;
+        }
+    };
+
+    editPrintFilament.onclick = function() {
+        for (let i = 0; i < filamentArr.length; i++){
+            generateEditPrintModalFilament(filamentArr[i], editPrintFilamentContent, editPrintFilament);
+        }
+
+        if (editPrintFilamentInt == 0) {
+            editPrintFilamentContent.style.display = "block";
+            editPrintFilamentInt = 1;
+        } else {
+            editPrintFilamentContent.style.display = "none";
+            editPrintFilamentInt = 0;
+        }
+    };
+
+    editPrintModal.style.display = "block";
+    currentModalOpen = editPrintModalUserData.uid + " editPrintModal";
+
+    closeEditPrintModal.onclick = function() {
+        editPrintModal.style.display = "none";
+        currentModalOpen = "";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == editPrintModal) {
+            editPrintModal.style.display = "none";
+            currentModalOpen = "";
+        }
+    };
+}
+
+function generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget) {
+    //if clicked on, contentListTarget = "none";
+    //if clicked on, change contentButtonTarget = filamentTitle;
+    //set a variable to the filamentUID
+}
 
 
 
@@ -1303,10 +1434,10 @@ function createPrintElement(createPrintData, dataContainerType, dataPlaceholderT
             printStatus.onclick = function() {
                 if (printStatusInt == 0) {
                     printStatusOptions.style.display = "block";
-                    printStatusInt++;
+                    printStatusInt = 1;
                 } else {
                     printStatusOptions.style.display = "none";
-                    printStatusInt--;
+                    printStatusInt = 0;
                 }
 
                 printStatusOrdered.onclick = function() {
@@ -1358,10 +1489,12 @@ function createPrintElement(createPrintData, dataContainerType, dataPlaceholderT
             };
         } else {
             printUpdateBtn.onclick = function() {
-                //Nothing yet...
+                printModal.style.display = "none";
+                currentModalOpen = "";
+                generateEditPrintModal(createPrintData);
             };
             printDeleteBtn.onclick = function() {
-                //Nothing yet...
+                DBDeletePrintData(createPrintData.uid);
             };
         }
 
@@ -1604,14 +1737,17 @@ function initializeHomePage(){
     editPrintModal = document.getElementById("editPrintModal");
     closeEditPrintModal = document.getElementById("closeEditPrintModal");
     editPrintTitle = document.getElementById("editPrintTitle");
-    editPrintFilament = document.getElementById("printEditTitle");
-    editPrintFilamentContent = document.getElementById("printEditFilament");
+    printEditTitle = document.getElementById("printEditTitle");
+    editPrintFilament = document.getElementById("printEditFilament");
+    editPrintFilamentContent = document.getElementById("printEditFilamentContent");
     editPrintFilamentPlaceholder = document.getElementById("printFilamentPlaceholder");
     editPrintSize = document.getElementById("printEditSize");
+    editPrintSizeContent = document.getElementById("printEditSizeContent");
     editPrintSizeS = document.getElementById("printSizeSmall");
     editPrintSizeN = document.getElementById("printSizeNormal");
     editPrintSizeL = document.getElementById("printSizeLarge");
     editPrintInfill = document.getElementById("printEditInfill");
+    editPrintInfillContent = document.getElementById("printEditInfillContent");
     editPrintInfillNormal = document.getElementById("printInfillNormal");
     editPrintInfillL = document.getElementById("printInfillLarge");
     editPrintInfillXL = document.getElementById("printInfillXL");
@@ -1623,12 +1759,13 @@ function initializeHomePage(){
     editPrintUpdateBtn = document.getElementById("printEditUpdate");
     editPrintCancelBtn = document.getElementById("printEditCancel");
     homeVarArr = [dataElementContainer, elementPlaceholder, upgradeUserBtn, addPrintBtn, printDeleteBtn, editPrintModal,
-        closeEditPrintModal, editPrintTitle, editPrintFilament, editPrintFilamentContent, editPrintFilamentPlaceholder,
-        editPrintSize, editPrintSizeS, editPrintSizeN, editPrintSizeL, editPrintInfill, editPrintInfillNormal,
-        editPrintInfillL, editPrintInfillXL, editPrintInfillXXL, editPrintInfillXXXL, editPrintTime,
-        editPrintPrice, editPrintInfo, editPrintUpdateBtn, editPrintCancelBtn, offlineModal, offlineModalSpan,
-        printModal, closePrintModal, printTitle, printFilament, printTime, printSize, printInfill, printPrice,
-        printStatus, printUpdateBtn, homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
+        closeEditPrintModal, editPrintTitle, printEditTitle, editPrintFilament, editPrintFilamentContent,
+        editPrintFilamentPlaceholder, editPrintSize, editPrintSizeContent, editPrintSizeS, editPrintSizeN,
+        editPrintSizeL, editPrintInfill, editPrintInfillContent, editPrintInfillNormal, editPrintInfillL,
+        editPrintInfillXL, editPrintInfillXXL, editPrintInfillXXXL, editPrintTime, editPrintPrice, editPrintInfo,
+        editPrintUpdateBtn, editPrintCancelBtn, offlineModal, offlineModalSpan, printModal, closePrintModal,
+        printTitle, printFilament, printTime, printSize, printInfill, printPrice, printStatus, printUpdateBtn,
+        homeNavBtn, filamentsNavBtn, settingsNavBtn, signOutNavBtn];
 }
 
 function initializeSettingsPage(){
