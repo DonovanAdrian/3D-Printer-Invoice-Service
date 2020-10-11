@@ -42,6 +42,7 @@
  * HOME FUNCTIONS
  *   - generateEditPrintModal(editPrintModalUserData)
  *   - generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget)
+ *   - generateHomeAddBtn()
  *
  * SETTINGS FUNCTIONS
  *
@@ -316,10 +317,15 @@ window.onload = function() {
             loadFilamentData();
             DBFetchFilamentData();
 
+            generateHomeAddBtn();
+
             initializeNavBtns();
 
             if (printArr.length == 0)
                 createElementPlaceholder("Print");
+
+            if (user == null)
+                navigation(3);
         }
     }
     findPageElement = document.getElementById("settingsTitleID");
@@ -338,6 +344,9 @@ window.onload = function() {
             DBFetchCurrentUser();
 
             initializeNavBtns();
+
+            if (user == null)
+                navigation(3);
         }
     }
     findPageElement = document.getElementById("adminTitleID");
@@ -365,6 +374,11 @@ window.onload = function() {
 
             if (userArr.length == 0)
                 createElementPlaceholder("User");
+
+            if (user == null)
+                navigation(3);
+            else if (user.admin == 0)
+                navigation(0);
         }
     }
     findPageElement = document.getElementById("filamentTitleID");
@@ -389,6 +403,9 @@ window.onload = function() {
 
             if (filamentArr.length == 0)
                 createElementPlaceholder("Filament");
+
+            if (user == null)
+                navigation(3);
         }
     }
 
@@ -490,7 +507,7 @@ function initializeDatabase() {
 function findUIDItemInArr(item, userArray) {
     for(let i = 0; i < userArray.length; i++){
         if(userArray[i].uid == item){
-            console.log("Found item: " + item);
+            //console.log("Found item: " + item);
             return i;
         }
     }
@@ -693,18 +710,18 @@ function DBFetchAllUsers() {
 
             if(user != null)
                 if(data.key == user.key)
-                    user = data;
+                    user = data.val();
         });
 
         postRef.on('child_changed', function (data) {
             let i = findUIDItemInArr(data.key, userArr);
             if(userArr[i] != data.val() && i != -1){
                 //console.log("Updating " + userArr[i].userName + " to most updated version: " + data.val().userName);
-                userArr[i] = data;
+                userArr[i] = data.val();
 
                 if(user != null)
                     if(data.key == user.key)
-                        user = data;
+                        user = data.val();
             }
         });
 
@@ -739,14 +756,15 @@ function login() {
     let validUser = false;
     if(userArr.length != 0)
         for(let i = 0; i < userArr.length; i++) {
-            if(userArr[i].userName == userNameInput)
-                if(decode(userArr[i].pin) == pinInput) {
+            if(userArr[i].userName == userNameInput.value) {
+                if (decode(userArr[i].pin) == pinInput.value) {
                     loginInfoFail.innerHTML = "";
                     loginInfoSuccess.innerHTML = userArr[i].userName + " Authenticated!";
                     validUser = true;
                     user = userArr[i];
                     break;
                 }
+            }
         }
 
     if(validUser)
@@ -1050,6 +1068,11 @@ function generateEditPrintModalFilament(filamentData, contentListTarget, content
     //set a variable to the filamentUID
 }
 
+function generateHomeAddBtn() {
+    //update onclick event to open empty editPrintModal
+    //set text of addbtn to "Add Print"
+}
+
 
 
 //SETTINGS FUNCTIONS
@@ -1100,44 +1123,42 @@ function DBFetchCurrentUser(){
 
     let fetchPosts = function (postRef) {
         postRef.on('child_added', function (data) {
-            console.log(data.key);
-
             if (data.key == "name"){
-                user.name = data.value;
+                user.name = data.val();
             } else if (data.key == "userName"){
-                user.userName = data.value;
+                user.userName = data.val();
             } else if (data.key == "pin"){
-                user.pin = data.value;
+                user.pin = data.val();
             } else if (data.key == "admin"){
-                user.admin = data.value;
+                user.admin = data.val();
             } else if (data.key == "prints"){
-                user.prints = data.value;
+                user.prints = data.val();
+            } else if (data.key == "uid"){
+                //console.log("UID Received");
             } else {
-                console.log("Unrecognized Data Input");
+                console.log("Unrecognized Data Input: " + data.key + " " + data.val());
             }
         });
 
         postRef.on('child_changed', function (data) {
-            console.log(data.key);
-
             if (data.key == "name"){
-                user.name = data.value;
+                user.name = data.val();
             } else if (data.key == "userName"){
-                user.userName = data.value;
+                user.userName = data.val();
             } else if (data.key == "pin"){
-                user.pin = data.value;
+                user.pin = data.val();
             } else if (data.key == "admin"){
-                user.admin = data.value;
+                user.admin = data.val();
             } else if (data.key == "prints"){
-                user.prints = data.value;
+                user.prints = data.val();
+            } else if (data.key == "uid"){
+                //console.log("UID Updated");
             } else {
-                console.log("Unrecognized Data Input");
+                console.log("Unrecognized Data Input: " + data.key + " " + data.val());
             }
         });
 
         postRef.on('child_removed', function (data) {
-            console.log(data.key);
-
             if (data.key == "name"){
                 user.name = "";
             } else if (data.key == "userName"){
@@ -1148,6 +1169,8 @@ function DBFetchCurrentUser(){
                 user.admin = 0;
             } else if (data.key == "prints"){
                 user.prints = [];
+            } else if (data.key == "uid"){
+                //console.log("UID Removed?");
             } else {
                 console.log("Unrecognized Data Input");
             }
