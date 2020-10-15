@@ -40,9 +40,12 @@
  *   - addNewUserToDB()
  *
  * HOME FUNCTIONS
- *   - generateEditPrintModal(editPrintModalUserData)
+ *   - generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataBool)
+ *      - calculatePrice()
+ *      - calculateTime()
  *   - generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget)
  *   - generateHomeAddBtn()
+ *   - addNewPrintToDB()
  *
  * SETTINGS FUNCTIONS
  *
@@ -944,7 +947,10 @@ function addNewUserToDB(userData, guestBool){
 
 
 //HOME FUNCTIONS
-function generateEditPrintModal(editPrintModalUserData) {
+function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataBool) {
+    let priceCalculated = false;
+    let timeCalculated = false;
+
     editPrintTitle.innerHTML = editPrintModalUserData.title;
     printEditTitle.value = editPrintModalUserData.title;
     editPrintFilament.innerHTML = editPrintModalUserData.filament;
@@ -954,14 +960,26 @@ function generateEditPrintModal(editPrintModalUserData) {
     editPrintPrice.innerHTML = editPrintModalUserData.price;
     editPrintInfo.innerHTML = editPrintModalUserData.status;
 
+    if(blankPrintModalUserDataBool)
+        editPrintUpdateBtn.innerHTML = "Add Print";
+
     editPrintCancelBtn.onclick = function() {
+        currentModalOpen = "";
         editPrintModal.style.display = "none";
     };
 
     editPrintUpdateBtn.onclick = function() {
-        editPrintModalUserData.filament = editPrintFilamentUID;
-        DBUpdatePrintData(editPrintModalUserData);
-        editPrintModal.style.display = "none";
+        if (priceCalculated && timeCalculated) {
+            editPrintModalUserData.filament = editPrintFilamentUID;
+            if(blankPrintModalUserDataBool)
+                addNewPrintToDB(editPrintModalUserData);
+            else
+                DBUpdatePrintData(editPrintModalUserData);
+            currentModalOpen = "";
+            editPrintModal.style.display = "none";
+        } else {
+            alert("Please Complete All Fields Before Updating");
+        }
     };
 
     editPrintInfill.onclick = function() {
@@ -1061,6 +1079,26 @@ function generateEditPrintModal(editPrintModalUserData) {
             currentModalOpen = "";
         }
     };
+
+    function calculatePrice(){
+        let tempPrice = "";
+        //approximate price
+        //print "Approximately: $##.##"
+        tempPrice = "Approximately: " + tempPrice;
+        editPrintModalUserData.print = tempPrice;
+        editPrintPrice.innerHTML = tempPrice;
+        priceCalculated = true;
+    }
+
+    function calculateTime(){
+        let tempTime = "";
+        //approximate time
+        //print "Approximately: 00:00"
+        tempTime = "Approximately: " + tempTime;
+        editPrintModalUserData.time = tempTime;
+        editPrintTime.innerHTML = tempTime;
+        timeCalculated = true;
+    }
 }
 
 function generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget) {
@@ -1071,26 +1109,38 @@ function generateEditPrintModalFilament(filamentData, contentListTarget, content
 
 function generateHomeAddBtn() {
     addPrintBtn.onclick = function() {
-        //update onclick event to open empty editPrintModal
-
-
-        editPrintModal.style.display = "block";
-        currentModalOpen = "editPrintModal";
-
-        closeEditPrintModal.onclick = function() {
-            editPrintModal.style.display = "none";
-            currentModalOpen = "";
+        let blankPrintModalUserData = {
+            title: "",
+            //link: "",
+            filament: "Select A Filament",
+            size: "Select A Size",
+            infill: "Select An Infill",
+            time: "Please Select A Filament, Size, and Infill First",
+            price: "Please Select A Filament, Size, and Infill First",
+            status: "The Status Will Be Updated After The Print Is Submitted"
         };
 
-        window.onclick = function(event) {
-            if (event.target == editPrintModal) {
-                editPrintModal.style.display = "none";
-                currentModalOpen = "";
-            }
-        };
+        generateEditPrintModal(blankPrintModalUserData, true);
     };
 
     addPrintBtn.innerHTML = "Add Print";
+}
+
+function addNewPrintToDB(printData) {
+    firebase.database().ref("print/" + printData.uid).set({
+        title: printData.title,
+        //link: printData.link,
+        filament: printData.filament,
+        size: printData.size,
+        infill: printData.infill,
+        time: printData.time,
+        price: printData.price,
+        status: printData.status
+    });
+
+    console.log(printData);
+
+    printArr.push(printData);
 }
 
 
@@ -1538,7 +1588,7 @@ function createPrintElement(createPrintData, dataContainerType, dataPlaceholderT
             printUpdateBtn.onclick = function() {
                 printModal.style.display = "none";
                 currentModalOpen = "";
-                generateEditPrintModal(createPrintData);
+                generateEditPrintModal(createPrintData, false);
             };
             printDeleteBtn.onclick = function() {
                 DBDeletePrintData(createPrintData.uid);
