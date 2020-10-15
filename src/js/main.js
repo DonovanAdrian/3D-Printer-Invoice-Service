@@ -1033,16 +1033,17 @@ function generateEditPrintModal(editPrintModalUserData) {
     };
 
     editPrintFilament.onclick = function() {
-        for (let i = 0; i < filamentArr.length; i++){
-            generateEditPrintModalFilament(filamentArr[i], editPrintFilamentContent, editPrintFilament);
-        }
+        if (filamentArr.length != 0) {
+            for (let i = 0; i < filamentArr.length; i++)
+                generateEditPrintModalFilament(filamentArr[i], editPrintFilamentContent, editPrintFilament);
 
-        if (editPrintFilamentInt == 0) {
-            editPrintFilamentContent.style.display = "block";
-            editPrintFilamentInt = 1;
-        } else {
-            editPrintFilamentContent.style.display = "none";
-            editPrintFilamentInt = 0;
+            if (editPrintFilamentInt == 0) {
+                editPrintFilamentContent.style.display = "block";
+                editPrintFilamentInt = 1;
+            } else {
+                editPrintFilamentContent.style.display = "none";
+                editPrintFilamentInt = 0;
+            }
         }
     };
 
@@ -1069,8 +1070,27 @@ function generateEditPrintModalFilament(filamentData, contentListTarget, content
 }
 
 function generateHomeAddBtn() {
-    //update onclick event to open empty editPrintModal
-    //set text of addbtn to "Add Print"
+    addPrintBtn.onclick = function() {
+        //update onclick event to open empty editPrintModal
+
+
+        editPrintModal.style.display = "block";
+        currentModalOpen = "editPrintModal";
+
+        closeEditPrintModal.onclick = function() {
+            editPrintModal.style.display = "none";
+            currentModalOpen = "";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == editPrintModal) {
+                editPrintModal.style.display = "none";
+                currentModalOpen = "";
+            }
+        };
+    };
+
+    addPrintBtn.innerHTML = "Add Print";
 }
 
 
@@ -1250,7 +1270,11 @@ function DBFetchFilamentData(){
 
 //LOAD DATA FUNCTIONS
 function loadConfig(){
-    configObj = JSON.parse(sessionStorage.config);
+    try {
+        configObj = JSON.parse(sessionStorage.config);
+    } catch (err) {
+        navigation(3);
+    }
 }
 
 function loadCurrentUser(){
