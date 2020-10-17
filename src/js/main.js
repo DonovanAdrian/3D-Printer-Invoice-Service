@@ -1082,7 +1082,7 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
 
     function calculatePrice(){
         let tempPrice = "";
-        //approximate price
+        //approximate price TODO
         //print "Approximately: $##.##"
         tempPrice = "Approximately: " + tempPrice;
         editPrintModalUserData.print = tempPrice;
@@ -1092,7 +1092,7 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
 
     function calculateTime(){
         let tempTime = "";
-        //approximate time
+        //approximate time TODO
         //print "Approximately: 00:00"
         tempTime = "Approximately: " + tempTime;
         editPrintModalUserData.time = tempTime;
@@ -1102,6 +1102,7 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
 }
 
 function generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget) {
+    //TODO
     //if clicked on, contentListTarget = "none";
     //if clicked on, change contentButtonTarget = filamentTitle;
     //set a variable to the filamentUID
@@ -1111,7 +1112,7 @@ function generateHomeAddBtn() {
     addPrintBtn.onclick = function() {
         let blankPrintModalUserData = {
             title: "",
-            //link: "",
+            //link: "", TODO
             filament: "Select A Filament",
             size: "Select A Size",
             infill: "Select An Infill",
@@ -1127,9 +1128,11 @@ function generateHomeAddBtn() {
 }
 
 function addNewPrintToDB(printData) {
+    //generate UID first TODO
+
     firebase.database().ref("print/" + printData.uid).set({
         title: printData.title,
-        //link: printData.link,
+        //link: printData.link, TODO
         filament: printData.filament,
         size: printData.size,
         infill: printData.infill,
