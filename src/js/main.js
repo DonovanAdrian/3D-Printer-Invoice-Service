@@ -41,8 +41,8 @@
  *
  * HOME FUNCTIONS
  *   - generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataBool)
- *      - calculatePrice()
- *      - calculateTime()
+ *   - calculatePrice(filamentOption, sizeOption, infillOption)
+ *   - calculateTime(filamentOption, sizeOption, infillOption)
  *   - generateEditPrintModalFilament(filamentData, contentListTarget, contentButtonTarget)
  *   - generateHomeAddBtn()
  *   - addNewPrintToDB()
@@ -199,6 +199,11 @@ let editPrintFilamentUID;
 let editPrintFilamentInt = 0;
 let editPrintSizeInt = 0;
 let editPrintInfillInt = 0;
+let printFilamentBool = false;
+let printSizeBool = false;
+let printInfillBool = false;
+let priceCalculated = false;
+let timeCalculated = false;
 
 //SETTINGS VARS
 let editNameInput;
@@ -948,11 +953,9 @@ function addNewUserToDB(userData, guestBool){
 
 //HOME FUNCTIONS
 function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataBool) {
-    let priceCalculated = false;
-    let timeCalculated = false;
-
     editPrintTitle.innerHTML = editPrintModalUserData.title;
     printEditTitle.value = editPrintModalUserData.title;
+    editPrintLink.innerHTML = editPrintModalUserData.link;
     editPrintFilament.innerHTML = editPrintModalUserData.filament;
     editPrintSize.innerHTML = editPrintModalUserData.size;
     editPrintInfill.innerHTML = editPrintModalUserData.infill;
@@ -964,17 +967,23 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
         editPrintUpdateBtn.innerHTML = "Add Print";
 
     editPrintCancelBtn.onclick = function() {
+        printFilamentBool = false;
+        printSizeBool = false;
+        printInfillBool = false;
         currentModalOpen = "";
         editPrintModal.style.display = "none";
     };
 
     editPrintUpdateBtn.onclick = function() {
-        if (priceCalculated && timeCalculated) {
+        if (priceCalculated && timeCalculated && printEditTitle.value != "" && editPrintLink.innnerHTML != "") {
             editPrintModalUserData.filament = editPrintFilamentUID;
             if(blankPrintModalUserDataBool)
                 addNewPrintToDB(editPrintModalUserData);
             else
                 DBUpdatePrintData(editPrintModalUserData);
+            printFilamentBool = false;
+            printSizeBool = false;
+            printInfillBool = false;
             currentModalOpen = "";
             editPrintModal.style.display = "none";
         } else {
@@ -987,30 +996,45 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
             editPrintInfill.innerHTML = "15%";
             editPrintModalUserData.infill = "Normal";
             editPrintInfillContent.style.display = "none";
+            printInfillBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         editPrintInfillL.onclick = function() {
             editPrintInfill.innerHTML = "35%";
             editPrintModalUserData.infill = "Large";
             editPrintInfillContent.style.display = "none";
+            printInfillBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         editPrintInfillXL.onclick = function() {
             editPrintInfill.innerHTML = "50%";
             editPrintModalUserData.infill = "XL";
             editPrintInfillContent.style.display = "none";
+            printInfillBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         editPrintInfillXXL.onclick = function() {
             editPrintInfill.innerHTML = "75%";
             editPrintModalUserData.infill = "XXL";
             editPrintInfillContent.style.display = "none";
+            printInfillBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         editPrintInfillXXXL.onclick = function() {
             editPrintInfill.innerHTML = "100%";
             editPrintModalUserData.infill = "XXXL";
             editPrintInfillContent.style.display = "none";
+            printInfillBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         if (editPrintInfillInt == 0) {
@@ -1027,18 +1051,28 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
             editPrintSize.innerHTML = "Small";
             editPrintModalUserData.size = "Small";
             editPrintSizeContent.style.display = "none";
+            printSizeBool = true;
+            calculatePrice();
+            calculateTime();
+
         };
 
         editPrintSizeN.onclick = function() {
             editPrintSize.innerHTML = "Normal";
             editPrintModalUserData.size = "Normal";
             editPrintSizeContent.style.display = "none";
+            printSizeBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         editPrintSizeL.onclick = function() {
             editPrintSize.innerHTML = "Large";
             editPrintModalUserData.size = "Large";
             editPrintSizeContent.style.display = "none";
+            printSizeBool = true;
+            calculatePrice();
+            calculateTime();
         };
 
         if (editPrintSizeInt == 0) {
@@ -1069,33 +1103,45 @@ function generateEditPrintModal(editPrintModalUserData, blankPrintModalUserDataB
     currentModalOpen = editPrintModalUserData.uid + " editPrintModal";
 
     closeEditPrintModal.onclick = function() {
+        printFilamentBool = false;
+        printSizeBool = false;
+        printInfillBool = false;
         editPrintModal.style.display = "none";
         currentModalOpen = "";
     };
 
     window.onclick = function(event) {
         if (event.target == editPrintModal) {
+            printFilamentBool = false;
+            printSizeBool = false;
+            printInfillBool = false;
             editPrintModal.style.display = "none";
             currentModalOpen = "";
         }
     };
+}
 
-    function calculatePrice(){
-        let tempPrice = "";
+function calculatePrice(filamentOption, sizeOption, infillOption){
+    let tempPrice = "";
+
+    if (printFilamentBool && printSizeBool && printInfillBool) {
         //approximate price TODO
         //print "Approximately: $##.##"
         tempPrice = "Approximately: " + tempPrice;
-        editPrintModalUserData.print = tempPrice;
+        //editPrintModalUserData.print = tempPrice;
         editPrintPrice.innerHTML = tempPrice;
         priceCalculated = true;
     }
+}
 
-    function calculateTime(){
-        let tempTime = "";
+function calculateTime(filamentOption, sizeOption, infillOption){
+    let tempTime = "";
+
+    if (printFilamentBool && printSizeBool && printInfillBool) {
         //approximate time TODO
         //print "Approximately: 00:00"
         tempTime = "Approximately: " + tempTime;
-        editPrintModalUserData.time = tempTime;
+        //editPrintModalUserData.time = tempTime;
         editPrintTime.innerHTML = tempTime;
         timeCalculated = true;
     }
@@ -1106,6 +1152,11 @@ function generateEditPrintModalFilament(filamentData, contentListTarget, content
     //if clicked on, contentListTarget = "none";
     //if clicked on, change contentButtonTarget = filamentTitle;
     //set a variable to the filamentUID
+
+    //click on filament btn
+    printFilamentBool = true;
+    calculatePrice();
+    calculateTime();
 }
 
 function generateHomeAddBtn() {
